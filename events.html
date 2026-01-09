@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>rontiers - Rankings</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      lucide.createIcons();
+    });
+  </script>
+  
+  <style>
+    .gradient-logo {
+      background: linear-gradient(to right, #f9a825, #ff8f00, #f97316);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 900;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      text-shadow: 0 4px 10px rgba(249, 168, 37, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-[#0a0e13] text-white min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="border-b border-slate-800 bg-[#0f1419]/50 backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-10">
+        <h1 class="gradient-logo">rontiers</h1>
+        <div class="flex items-center gap-8 text-slate-400 font-medium">
+          <a href="#" class="hover:text-white flex items-center gap-2">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            Home
+          </a>
+        </div>
+      </div>
+      
+      <!-- Search -->
+      <div class="relative">
+        <i data-lucide="search" class="w-5 h-5 absolute left-4 top-3.5 text-slate-500"></i>
+        <input type="text" placeholder="Search player..." class="bg-slate-800/70 border border-slate-700 rounded-full pl-12 pr-6 py-3 w-80 focus:outline-none focus:border-slate-600 text-slate-300">
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-6 py-10">
+
+    <!-- Game Mode Tabs -->
+    <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+      
+      <!-- Overall (Active) -->
+      <button class="relative flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/60 rounded-2xl border border-slate-700 shadow-lg">
+        <a href="index.html" class="text-4xl mb-2">🏆</a>
+        <a href="index.html" class="font-medium text-slate-400">Overall</a>
+      </button>
+      
+      <!-- Pubs -->
+      <button class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80">
+        <a href="pubs.html" class="text-4xl mb-2">⚔️</a>
+        <a href="pubs.html" class="font-medium text-slate-400">Pubs</a>
+      </button>
+      
+      <!-- Events -->
+      <button class="relative flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80">
+        <span class="text-4xl mb-2 text-yellow-400">🌐</span>
+        <span class="font-semibold text-white">Events</span>
+        <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-white"></div>
+      </button>
+      
+      <!-- Tournament -->
+      <button class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80">
+        <a href="tournament.html" class="text-4xl mb-2 text-red-500">🤺</a>
+        <a href="tournament.html" class="font-medium text-slate-400">Tournament</a>
+      </button>
+      
+      <!-- Eco-Max -->
+      <button class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80">
+        <a href="eco-max.html" class="text-4xl mb-2 text-red-400">💲</a>
+        <a href="eco-max.html" class="font-medium text-slate-400">Eco-Max</a>
+      </button>
+      
+      <!-- Mp-Max -->
+      <button class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80">
+        <a href="mp-max.html" class="text-4xl mb-2 text-purple-500">👤</a>
+        <a href="mp-max.html" class="font-medium text-slate-400">Mp-max</a>
+      </button>
+      
+    </div>
+
+    <!-- Bottom Info Bar -->
+    <div class="flex justify-end items-center gap-4 my-8 relative">
+      <button id="info-button" class="flex items-center gap-2.5 px-5 py-2.5 bg-slate-800/70 rounded-full border border-slate-700 hover:bg-slate-700/70 transition">
+        <i data-lucide="info" class="w-5 h-5"></i>
+        <span class="font-medium">Information</span>
+      </button>
+
+      <!-- Dropdown Content -->
+      <div id="info-dropdown" class="absolute top-full right-0 mt-2 w-96 bg-[#0f1419] border border-slate-800 rounded-xl shadow-lg hidden z-50 overflow-hidden">
+        <!-- Tab Headers -->
+        <div class="flex border-b border-slate-800">
+          <button id="titles-tab" class="flex-1 px-4 py-3 text-sm font-medium text-white bg-slate-800/50">Titles</button>
+          <button id="points-tab" class="flex-1 px-4 py-3 text-sm font-medium text-slate-400">Points</button>
+        </div>
+
+        <!-- Tab Content -->
+
+        <!-- Title -->
+        <div id="titles-content" class="p-6">
+          <h3 class="text-lg font-bold mb-4 text-white">How to obtain Achievement Titles</h3>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-start gap-2">
+              <span class="text-yellow-400">♦</span>
+              <div>
+                <span class="font-semibold text-yellow-400"> Grandmaster</span><br>
+                Obtained 250 total points.
+              </div>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-yellow-400">♦</span>
+              <div>
+                <span class="font-semibold text-yellow-400"> Master</span><br>
+                Obtained 200 total points.
+              </div>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-pink-500">♦</span>
+              <div>
+                <span class="font-semibold text-pink-500"> Ace</span><br>
+                Obtained 150 total points.
+              </div>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-purple-500">♦</span>
+              <div>
+                <span class="font-semibold text-purple-500">Specialist</span><br>
+                Obtained 100 total points.
+              </div>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-blue-400">♦</span>
+              <div>
+                <span class="font-semibold text-blue-400">Cadet</span><br>
+                Obtained 50 total points.
+              </div>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-blue-400">♦</span>
+              <div>
+                <span class="font-semibold text-blue-400">Novice</span><br>
+                Obtained 10+ total points.
+              </div>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-gray-400">♦</span>
+              <div>
+                <span class="font-semibold text-gray-400">Rookie</span><br>
+                Starting rank for players with less than 10 points.
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Points -->
+        <div id="points-content" class="p-6 hidden">
+          <h3 class="text-lg font-bold mb-4 text-white">How ranking points are calculated</h3>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-center gap-2">
+              <span class="text-yellow-500">🏆</span>
+              <div>
+                <span class="font-semibold">Tier 1</span><br>
+                ↑ 50 Points ↓ 40 Points
+              </div>
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-orange-500">🏆</span>
+              <div>
+                <span class="font-semibold">Tier 2</span><br>
+                ↑ 40 Points ↓ 30 Points
+              </div>
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-orange-600">🏆</span>
+              <div>
+                <span class="font-semibold">Tier 3</span><br>
+                ↑ 30 Points ↓ 20 Points
+              </div>
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-orange-600">🟡</span>
+              <div>
+                <span class="font-semibold">Tier 4</span><br>
+                ↑ 19 Points ↓ 10 Points
+              </div>
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-orange-600">🟠</span>
+              <div>
+                <span class="font-semibold">Tier 5</span><br>
+                ↑ 9 Points ↓ 1 Point
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+    <!-- Leaderboard Header -->
+    <div class="bg-slate-900/50 border border-slate-800 rounded-xl px-6 py-4">
+      <div class="flex items-center text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <div class="w-16">#</div>
+        <div class="flex-1 ml-4">Player</div>
+        <div class="w-32 text-center">Region</div>
+        <div class="flex-1 text-right">Tiers</div>
+      </div>
+    </div>
+
+    <!-- Player list would go here (empty in screenshot) -->
+    <div class="mt-4 space-y-3">
+      <!-- No players shown in the image -->
+    </div>
+
+  </main>
+
+  <!-- JavaScript for Toggle and Tabs -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const infoButton = document.getElementById('info-button');
+      const infoDropdown = document.getElementById('info-dropdown');
+      const titlesTab = document.getElementById('titles-tab');
+      const pointsTab = document.getElementById('points-tab');
+      const titlesContent = document.getElementById('titles-content');
+      const pointsContent = document.getElementById('points-content');
+
+      // Toggle dropdown on button click
+      infoButton.addEventListener('click', function() {
+        infoDropdown.classList.toggle('hidden');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!infoButton.contains(event.target) && !infoDropdown.contains(event.target)) {
+          infoDropdown.classList.add('hidden');
+        }
+      });
+
+      // Tab switching
+      titlesTab.addEventListener('click', function() {
+        titlesTab.classList.add('text-white', 'bg-slate-800/50');
+        titlesTab.classList.remove('text-slate-400');
+        pointsTab.classList.add('text-slate-400');
+        pointsTab.classList.remove('text-white', 'bg-slate-800/50');
+        titlesContent.classList.remove('hidden');
+        pointsContent.classList.add('hidden');
+      });
+
+      pointsTab.addEventListener('click', function() {
+        pointsTab.classList.add('text-white', 'bg-slate-800/50');
+        pointsTab.classList.remove('text-slate-400');
+        titlesTab.classList.add('text-slate-400');
+        titlesTab.classList.remove('text-white', 'bg-slate-800/50');
+        pointsContent.classList.remove('hidden');
+        titlesContent.classList.add('hidden');
+      });
+    });
+  </script>
+
+</body>
+</html>
