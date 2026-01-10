@@ -2,13 +2,34 @@
 
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
 const SHEET_TITLE = "Events_Rank";
-const SHEET_RANGE = "A1:E20";
+const SHEET_RANGE = "A2:F20"; // Extended to column F for User ID and skip header
 
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
 
+// Function to get Roblox avatar headshot using a CORS proxy
+async function getRobloxAvatar(userId) {
+  if (!userId) return null;
+  
+  try {
+    const proxyUrl = 'https://corsproxy.io/?';
+    const apiUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
+    
+    const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
+    const data = await response.json();
+    
+    if (data.data && data.data.length > 0 && data.data[0].state === 'Completed') {
+      return data.data[0].imageUrl;
+    }
+    return null;
+  } catch (error) {
+    console.error(`Error fetching avatar for user ${userId}:`, error);
+    return null;
+  }
+}
+
 fetch(FULL_SHEET_URL)
   .then(res => res.text())
-  .then(rep => {
+  .then(async rep => {
     const data = JSON.parse(rep.substring(47).slice(0, -2));
     const rows = data.table.rows;
     const container = document.querySelector('.mt-4.space-y-3');
@@ -28,25 +49,35 @@ fetch(FULL_SHEET_URL)
     // Group players by tier
     let tierGroups = {1: [], 2: [], 3: [], 4: [], 5: []};
 
-    // Skip header row (i=0)
+    // Process rows (header already skipped in SHEET_RANGE)
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i] ? rows[i].c : null;
       if (!row || !row[1] || !row[1].v) continue; // Skip empty or invalid rows
 
-      const num = row[0] ? row[0].v : i;
+      const num = row[0] ? row[0].v : (i + 1);
       const player = row[1].v;
       const region = row[2] ? row[2].v : 'NA';
       const eventTier = row[3] ? row[3].v : 'N/A';
       const points = row[4] ? row[4].v : 0;
+      const userId = row[5] ? row[5].v : null; // User ID from column F
 
       const tierLevel = getTierLevel(eventTier);
-
       if (tierLevel >= 1 && tierLevel <= 5) {
-        tierGroups[tierLevel].push({player, region, points, num});
+        // Fetch avatar for each player
+        const avatarUrl = await getRobloxAvatar(userId);
+        
+        tierGroups[tierLevel].push({
+          player, 
+          region, 
+          points, 
+          num, 
+          userId, 
+          avatarUrl
+        });
       }
     }
 
-    // Sort each tier group by points descending, then by num ascending (assuming # is rank)
+    // Sort each tier group by points descending, then by num ascending
     for (let t = 1; t <= 5; t++) {
       tierGroups[t].sort((a, b) => b.points - a.points || a.num - b.num);
     }
@@ -66,15 +97,21 @@ fetch(FULL_SHEET_URL)
         html += '<li class="text-center text-slate-400 text-sm">No players yet</li>';
       } else {
         tierGroups[t].forEach((p, index) => {
+          // Generate avatar HTML with fallback
+          const avatarHTML = p.avatarUrl 
+            ? `<img src="${p.avatarUrl}" alt="${p.player} avatar" class="w-8 h-8 rounded" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+               <div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-white font-bold text-xs" style="display:none;">${p.player.charAt(0).toUpperCase()}</div>`
+            : `<div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-white font-bold text-xs">${p.player.charAt(0).toUpperCase()}</div>`;
+          
           html += `
-            <li class="flex items-center gap-3">
-              <img src="https://minotar.net/avatar/${p.player}/32.png" alt="${p.player} avatar" class="w-8 h-8 rounded">
-              <span class="text-white font-medium">${p.player}</span>
+            <li class="flex items-center gap-3 justify-between">
+              <div class="flex items-center gap-3">
+                ${avatarHTML}
+                <span class="text-white font-medium">${p.player}</span>
+              </div>
+              <span class="text-amber-400 font-semibold">${p.points}</span>
             </li>
           `;
-          if (index < tierGroups[t].length - 1) {
-            html += '<div class="text-center text-gray-500">↑</div>';
-          }
         });
       }
 
