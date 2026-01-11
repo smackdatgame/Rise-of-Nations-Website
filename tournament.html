@@ -107,14 +107,14 @@
       <div id="info-dropdown" class="absolute top-full right-0 mt-2 w-96 bg-[#0f1419] border border-slate-800 rounded-xl shadow-lg hidden z-50 overflow-hidden">
         <!-- Tab Headers -->
         <div class="flex border-b border-slate-800">
-          <button id="titles-tab" class="flex-1 px-4 py-3 text-sm font-medium text-white bg-slate-800/50">Titles</button>
-          <button id="points-tab" class="flex-1 px-4 py-3 text-sm font-medium text-slate-400">Points</button>
+          <button id="titles-tab" class="flex-1 px-4 py-3 text-sm font-medium text-slate-400">Titles</button>
+          <button id="points-tab" class="flex-1 px-4 py-3 text-sm font-medium text-white bg-slate-800/50">Points</button>
         </div>
 
         <!-- Tab Content -->
 
         <!-- Title -->
-        <div id="titles-content" class="p-6">
+        <div id="titles-content" class="p-6 hidden">
           <h3 class="text-lg font-bold mb-4 text-white">How to obtain Achievement Titles</h3>
           <ul class="space-y-3 text-sm">
             <li class="flex items-start gap-2">
@@ -170,42 +170,77 @@
         </div>
 
         <!-- Points -->
-        <div id="points-content" class="p-6 hidden">
-          <h3 class="text-lg font-bold mb-4 text-white">How ranking points are calculated</h3>
-          <ul class="space-y-3 text-sm">
-            <li class="flex items-center gap-2">
-              <span class="text-yellow-500">🏆</span>
-              <div>
-                <span class="font-semibold">Tier 1</span><br>
-                ↑ 50 Points ↓ 40 Points
+        <div id="points-content" class="p-6">
+          <h3 class="text-lg font-bold mb-6 text-white">How ranking points are calculated</h3>
+          <ul class="space-y-4 text-sm text-slate-300">
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">🏆</span>
+              <div class="flex-1">
+                <div class="font-semibold text-yellow-500 mb-2">Tier 1</div>
+                <div class="flex gap-2">
+                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-yellow-400 flex items-center gap-1">
+                    <i data-lucide="arrow-up" class="w-4 h-4"></i> 60 Points
+                  </span>
+                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-yellow-400 flex items-center gap-1">
+                    <i data-lucide="arrow-down" class="w-4 h-4"></i> 45 Points
+                  </span>
+                </div>
               </div>
             </li>
-            <li class="flex items-center gap-2">
-              <span class="text-orange-500">🏆</span>
-              <div>
-                <span class="font-semibold">Tier 2</span><br>
-                ↑ 40 Points ↓ 30 Points
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">🏆</span>
+              <div class="flex-1">
+                <div class="font-semibold text-gray-400 mb-2">Tier 2</div>
+                <div class="flex gap-2">
+                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                    <i data-lucide="arrow-up" class="w-4 h-4"></i> 30 Points
+                  </span>
+                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                    <i data-lucide="arrow-down" class="w-4 h-4"></i> 20 Points
+                  </span>
+                </div>
               </div>
             </li>
-            <li class="flex items-center gap-2">
-              <span class="text-orange-600">🏆</span>
-              <div>
-                <span class="font-semibold">Tier 3</span><br>
-                ↑ 30 Points ↓ 20 Points
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">🏆</span>
+              <div class="flex-1">
+                <div class="font-semibold text-orange-600 mb-2">Tier 3</div>
+                <div class="flex gap-2">
+                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-orange-400 flex items-center gap-1">
+                    <i data-lucide="arrow-up" class="w-4 h-4"></i> 10 Points
+                  </span>
+                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-orange-400 flex items-center gap-1">
+                    <i data-lucide="arrow-down" class="w-4 h-4"></i> 6 Points
+                  </span>
+                </div>
               </div>
             </li>
-            <li class="flex items-center gap-2">
-              <span class="text-orange-600">🟡</span>
-              <div>
-                <span class="font-semibold">Tier 4</span><br>
-                ↑ 19 Points ↓ 10 Points
+            <li class="flex items-start gap-3">
+              <span class="text-xl">📍</span>
+              <div class="flex-1">
+                <div class="font-semibold text-slate-300 mb-2">Tier 4</div>
+                <div class="flex gap-2">
+                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                    <i data-lucide="arrow-up" class="w-4 h-4"></i> 4 Points
+                  </span>
+                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                    <i data-lucide="arrow-down" class="w-4 h-4"></i> 3 Points
+                  </span>
+                </div>
               </div>
             </li>
-            <li class="flex items-center gap-2">
-              <span class="text-orange-600">🟠</span>
-              <div>
-                <span class="font-semibold">Tier 5</span><br>
-                ↑ 9 Points ↓ 1 Point
+            <li class="flex items-start gap-3">
+              <span class="text-xl">📍</span>
+              <div class="flex-1">
+                <div class="font-semibold text-slate-300 mb-2">Tier 5</div>
+                <div class="flex gap-2">
+                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                    <i data-lucide="arrow-up" class="w-4 h-4"></i> 2 Points
+                  </span>
+                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                    <i data-lucide="arrow-down" class="w-4 h-4"></i> 1 Point
+                  </span>
+                </div>
               </div>
             </li>
           </ul>

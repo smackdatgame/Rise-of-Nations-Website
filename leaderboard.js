@@ -5,11 +5,48 @@ const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs"; // ID of the Go
 const SHEET_TITLE = "Overall_Rank"; // Name of the sheet to fetch data from
 const SHEET_RANGE = "A2:I20"; // Start from A2 to skip header row
 
-// Construct the URL for fetching data from Google Sheets
+// Define all ranking sheets
+const PUBS_SHEET_TITLE = "Pubs_Rank";
+const PUBS_SHEET_RANGE = "A2:F20";
+
+const EVENTS_SHEET_TITLE = "Events_Rank";
+const EVENTS_SHEET_RANGE = "A2:F20";
+
+const TOURNAMENTS_SHEET_TITLE = "Tournaments_Rank";
+const TOURNAMENTS_SHEET_RANGE = "A2:F20";
+
+const ECOMAX_SHEET_TITLE = "EcoMax_Rank";
+const ECOMAX_SHEET_RANGE = "A2:F20";
+
+const MPMAX_SHEET_TITLE = "MpMax_Rank";
+const MPMAX_SHEET_RANGE = "A2:F20";
+
+// Construct URLs for fetching data from Google Sheets
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
+const PUBS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${PUBS_SHEET_TITLE}&range=${PUBS_SHEET_RANGE}`;
+const EVENTS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${EVENTS_SHEET_TITLE}&range=${EVENTS_SHEET_RANGE}`;
+const TOURNAMENTS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${TOURNAMENTS_SHEET_TITLE}&range=${TOURNAMENTS_SHEET_RANGE}`;
+const ECOMAX_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${ECOMAX_SHEET_TITLE}&range=${ECOMAX_SHEET_RANGE}`;
+const MPMAX_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${MPMAX_SHEET_TITLE}&range=${MPMAX_SHEET_RANGE}`;
 
 // Initialize an array to store all player data
 let allPlayers = [];
+
+// Function to convert points to tier string
+function pointsToTier(points) {
+  if (points === 0) return 'N/A';
+  if (points >= 60) return 'HT1';
+  else if (points >= 45) return 'LT1';
+  else if (points >= 30) return 'HT2';
+  else if (points >= 20) return 'LT2';
+  else if (points >= 10) return 'HT3';
+  else if (points >= 6) return 'LT3';
+  else if (points >= 4) return 'HT4';
+  else if (points >= 3) return 'LT4';
+  else if (points >= 2) return 'HT5';
+  else if (points >= 1) return 'LT5';
+  return 'N/A';
+}
 
 // Function to get Roblox avatar headshot using a CORS proxy
 async function getRobloxAvatar(userId) {
@@ -39,10 +76,45 @@ async function getRobloxAvatar(userId) {
   }
 }
 
-// Fetch data from the Google Sheet
-fetch(FULL_SHEET_URL)
-  .then(res => res.text())
-  .then(async rep => {
+// Generic function to fetch points from any ranking sheet
+async function fetchRankingPoints(sheetUrl, sheetName) {
+  try {
+    const response = await fetch(sheetUrl);
+    const text = await response.text();
+    const data = JSON.parse(text.substring(47).slice(0, -2));
+    const rows = data.table.rows;
+    
+    // Create a map of player name to points
+    const pointsMap = {};
+    
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i] ? rows[i].c : null;
+      if (!row || !row[1] || !row[1].v) continue;
+      
+      const player = row[1].v; // Player name
+      const points = row[4] ? row[4].v : 0; // Points from column E
+      
+      pointsMap[player] = points;
+    }
+    
+    console.log(`${sheetName} points map:`, pointsMap);
+    return pointsMap;
+  } catch (error) {
+    console.error(`Error fetching ${sheetName} data:`, error);
+    return {};
+  }
+}
+
+// Fetch data from all sheets
+Promise.all([
+  fetch(FULL_SHEET_URL).then(res => res.text()),
+  fetchRankingPoints(PUBS_SHEET_URL, 'Pubs_Rank'),
+  fetchRankingPoints(EVENTS_SHEET_URL, 'Events_Rank'),
+  fetchRankingPoints(TOURNAMENTS_SHEET_URL, 'Tournaments_Rank'),
+  fetchRankingPoints(ECOMAX_SHEET_URL, 'EcoMax_Rank'),
+  fetchRankingPoints(MPMAX_SHEET_URL, 'MpMax_Rank')
+])
+  .then(async ([rep, pubsPointsMap, eventsPointsMap, tournamentsPointsMap, ecoMaxPointsMap, mpMaxPointsMap]) => {
     // Parse the response to extract JSON data (Google Sheets specific parsing)
     const data = JSON.parse(rep.substring(47).slice(0, -2));
     const rows = data.table.rows;
@@ -57,11 +129,6 @@ fetch(FULL_SHEET_URL)
       const num = row[0] ? row[0].v : (i + 1); // Rank number
       const player = row[1] ? row[1].v : 'Unknown'; // Player name
       const region = row[2] ? row[2].v : 'NA'; // Region
-      const pub = row[3] ? row[3].v : 'N/A'; // Pub Tier
-      const event = row[4] ? row[4].v : 'N/A'; // Event Tier
-      const tournament = row[5] ? row[5].v : 'N/A'; // Tournament Tier
-      const eco = row[6] ? row[6].v : 'N/A'; // Eco Tier
-      const mp = row[7] ? row[7].v : 'N/A'; // Mp Tier
       const userId = row[8] ? row[8].v : null; // User ID
 
       console.log(`Row ${i + 1}: Player=${player}, UserId=${userId}`);
@@ -69,31 +136,24 @@ fetch(FULL_SHEET_URL)
       // Skip invalid rows
       if (!player || player === 'Unknown') continue;
 
-      // Helper function to get numeric tier level from string
-      function getTierLevel(tier) {
-        if (tier === 'N/A') return 0;
-        const match = tier.match(/\d+/);
-        return match ? parseInt(match[0]) : 0;
-      }
+      // Get points from respective ranking sheets (default to 0 if not found)
+      const pubPoints = pubsPointsMap[player] || 0;
+      const eventPoints = eventsPointsMap[player] || 0;
+      const tournamentPoints = tournamentsPointsMap[player] || 0;
+      const ecoPoints = ecoMaxPointsMap[player] || 0;
+      const mpPoints = mpMaxPointsMap[player] || 0;
 
-      // Map tier levels to points
-      const tierPointsMap = {
-        1: 50,
-        2: 40,
-        3: 30,
-        4: 15, // Average for Tier 4
-        5: 5   // Average for Tier 5
-      };
-
-      // Calculate points for each category
-      const pubPoints = tierPointsMap[getTierLevel(pub)] || 0;
-      const eventPoints = tierPointsMap[getTierLevel(event)] || 0;
-      const tournamentPoints = tierPointsMap[getTierLevel(tournament)] || 0;
-      const ecoPoints = tierPointsMap[getTierLevel(eco)] || 0;
-      const mpPoints = tierPointsMap[getTierLevel(mp)] || 0;
+      // Convert points to tier strings
+      const pub = pointsToTier(pubPoints);
+      const event = pointsToTier(eventPoints);
+      const tournament = pointsToTier(tournamentPoints);
+      const eco = pointsToTier(ecoPoints);
+      const mp = pointsToTier(mpPoints);
 
       // Sum up total points
       const totalPoints = pubPoints + eventPoints + tournamentPoints + ecoPoints + mpPoints;
+
+      console.log(`${player}: pub=${pubPoints}(${pub}), event=${eventPoints}(${event}), tournament=${tournamentPoints}(${tournament}), eco=${ecoPoints}(${eco}), mp=${mpPoints}(${mp}), total=${totalPoints}`);
 
       // Determine title based on total points
       let title = 'Rookie';
@@ -104,12 +164,14 @@ fetch(FULL_SHEET_URL)
       else if (totalPoints >= 50) title = 'Cadet';
       else if (totalPoints >= 10) title = 'Novice';
 
-      // Assign color class for title
-      let titleColor = 'text-gray-400';
-      if (title === 'Grandmaster' || title === 'Master') titleColor = 'text-yellow-400';
-      else if (title === 'Ace') titleColor = 'text-pink-500';
-      else if (title === 'Specialist') titleColor = 'text-purple-500';
-      else if (title === 'Cadet' || title === 'Novice') titleColor = 'text-blue-400';
+      // Assign color class for title based on the screenshot colors
+      let titleColor = 'text-gray-400'; // Rookie - gray
+      if (title === 'Grandmaster') titleColor = 'text-yellow-400'; // Yellow/gold
+      else if (title === 'Master') titleColor = 'text-yellow-500'; // Yellow/gold
+      else if (title === 'Ace') titleColor = 'text-pink-500'; // Pink
+      else if (title === 'Specialist') titleColor = 'text-purple-500'; // Purple
+      else if (title === 'Cadet') titleColor = 'text-blue-400'; // Blue
+      else if (title === 'Novice') titleColor = 'text-blue-400'; // Blue
 
       // Assign colors for region badge
       let regionBg = 'bg-red-900/50';
@@ -139,7 +201,12 @@ fetch(FULL_SHEET_URL)
         regionBg,
         regionText,
         avatarUrl,
-        userId
+        userId,
+        pubPoints,
+        eventPoints,
+        tournamentPoints,
+        ecoPoints,
+        mpPoints
       });
     }
 

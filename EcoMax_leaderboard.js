@@ -27,6 +27,28 @@ async function getRobloxAvatar(userId) {
   }
 }
 
+// Function to determine tier based on points
+function getTierFromPoints(points) {
+  if (points >= 40) return 1;      // Tier 1: 40-50 points
+  else if (points >= 30) return 2; // Tier 2: 30-39 points
+  else if (points >= 20) return 3; // Tier 3: 20-29 points
+  else if (points >= 10) return 4; // Tier 4: 10-19 points
+  else if (points >= 1) return 5;  // Tier 5: 1-9 points
+  return 0; // No tier for 0 points
+}
+
+// Function to get tier header background color
+function getTierHeaderBg(tier) {
+  switch(tier) {
+    case 1: return 'bg-gradient-to-r from-yellow-600 to-yellow-700'; // Gold
+    case 2: return 'bg-gradient-to-r from-gray-400 to-gray-500'; // Silver
+    case 3: return 'bg-gradient-to-r from-orange-700 to-orange-800'; // Bronze
+    case 4: return 'bg-gradient-to-r from-gray-600 to-gray-700'; // Grey
+    case 5: return 'bg-gradient-to-r from-gray-700 to-gray-800'; // Dark Grey
+    default: return 'bg-amber-900/70';
+  }
+}
+
 fetch(FULL_SHEET_URL)
   .then(res => res.text())
   .then(async rep => {
@@ -39,13 +61,6 @@ fetch(FULL_SHEET_URL)
     container.classList.remove('space-y-3');
     container.classList.add('flex', 'gap-4', 'overflow-x-auto');
 
-    // Function to extract tier level number
-    function getTierLevel(tier) {
-      if (tier === 'N/A' || !tier) return 0;
-      const match = tier.match(/\d+/);
-      return match ? parseInt(match[0]) : 0;
-    }
-
     // Group players by tier
     let tierGroups = {1: [], 2: [], 3: [], 4: [], 5: []};
 
@@ -57,11 +72,13 @@ fetch(FULL_SHEET_URL)
       const num = row[0] ? row[0].v : (i + 1);
       const player = row[1].v;
       const region = row[2] ? row[2].v : 'NA';
-      const EcoMaxTier = row[3] ? row[3].v : 'N/A';
+      const pubTier = row[3] ? row[3].v : 'N/A';
       const points = row[4] ? row[4].v : 0;
       const userId = row[5] ? row[5].v : null; // User ID from column F
 
-      const tierLevel = getTierLevel(EcoMaxTier);
+      // Determine tier based on points instead of tier string
+      const tierLevel = getTierFromPoints(points);
+
       if (tierLevel >= 1 && tierLevel <= 5) {
         // Fetch avatar for each player
         const avatarUrl = await getRobloxAvatar(userId);
@@ -85,9 +102,11 @@ fetch(FULL_SHEET_URL)
     // Build HTML for tier columns
     let html = '';
     for (let t = 1; t <= 5; t++) {
+      const headerBg = getTierHeaderBg(t);
+      
       html += `
         <div class="flex-1 min-w-[180px] bg-slate-900/50 rounded-xl overflow-hidden">
-          <h3 class="bg-amber-900/70 text-center font-bold text-white py-2 flex justify-center items-center gap-1">
+          <h3 class="${headerBg} text-center font-bold text-white py-2 flex justify-center items-center gap-1">
             <span>🏆</span> Tier ${t}
           </h3>
           <ul class="p-4 space-y-3">
