@@ -3,23 +3,23 @@
 // Define constants for Google Sheets API access
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs"; // ID of the Google Spreadsheet
 const SHEET_TITLE = "Overall_Rank"; // Name of the sheet to fetch data from
-const SHEET_RANGE = "A2:I20"; // Start from A2 to skip header row
+const SHEET_RANGE = ""; // Start from A2 to skip header row
 
 // Define all ranking sheets
 const PUBS_SHEET_TITLE = "Pubs_Rank";
-const PUBS_SHEET_RANGE = "A2:F20";
+const PUBS_SHEET_RANGE = "";
 
 const EVENTS_SHEET_TITLE = "Events_Rank";
-const EVENTS_SHEET_RANGE = "A2:F20";
+const EVENTS_SHEET_RANGE = "";
 
 const TOURNAMENTS_SHEET_TITLE = "Tournaments_Rank";
-const TOURNAMENTS_SHEET_RANGE = "A2:F20";
+const TOURNAMENTS_SHEET_RANGE = "";
 
 const ECOMAX_SHEET_TITLE = "EcoMax_Rank";
-const ECOMAX_SHEET_RANGE = "A2:F20";
+const ECOMAX_SHEET_RANGE = "";
 
 const MPMAX_SHEET_TITLE = "MpMax_Rank";
-const MPMAX_SHEET_RANGE = "A2:F20";
+const MPMAX_SHEET_RANGE = "";
 
 // Construct URLs for fetching data from Google Sheets
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
@@ -126,7 +126,6 @@ Promise.all([
       const row = rows[i].c || []; // Handle potential missing cells
 
       // Extract cell values with fallbacks
-      const num = row[0] ? row[0].v : (i + 1); // Rank number
       const player = row[1] ? row[1].v : 'Unknown'; // Player name
       const region = row[2] ? row[2].v : 'NA'; // Region
       const userId = row[8] ? row[8].v : null; // User ID
@@ -179,15 +178,18 @@ Promise.all([
       if (region === 'EU') {
         regionBg = 'bg-green-900/50';
         regionText = 'text-green-300';
+      } else if (region === 'ASIA') {
+        regionBg = 'bg-blue-900/50';
+        regionText = 'text-blue-300';
       }
 
       // Get Roblox avatar using the User ID from the spreadsheet
       const avatarUrl = await getRobloxAvatar(userId);
       console.log(`Avatar URL for ${player}:`, avatarUrl);
 
-      // Store player data in the array
+      // Store player data in the array (without rank number yet)
       allPlayers.push({
-        num,
+        num: 0, // Will be assigned after sorting
         player,
         region,
         pub,
@@ -211,6 +213,16 @@ Promise.all([
     }
 
     console.log('All players processed:', allPlayers);
+
+    // Sort players by total points (highest to lowest)
+    allPlayers.sort((a, b) => b.totalPoints - a.totalPoints);
+    
+    // Reassign rank numbers based on sorted order
+    allPlayers.forEach((player, index) => {
+      player.num = index + 1;
+    });
+
+    console.log('Players sorted and ranked:', allPlayers);
 
     // Render all players initially
     renderPlayers(allPlayers);
@@ -240,6 +252,23 @@ function renderPlayers(players) {
   const container = document.querySelector('.mt-4.space-y-3');
   container.innerHTML = ''; // Clear existing content
 
+  // Function to get tier border color
+  const getTierBorderColor = (tier) => {
+    switch(tier) {
+      case 'HT1': return 'border-yellow-200'; // Light gold
+      case 'LT1': return 'border-yellow-500'; // Dark gold
+      case 'HT2': return 'border-gray-200'; // Light silver
+      case 'LT2': return 'border-gray-400'; // Dark silver
+      case 'HT3': return 'border-orange-500'; // Light bronze
+      case 'LT3': return 'border-orange-800'; // Dark bronze
+      case 'HT4': return 'border-gray-600'; // Light grey
+      case 'LT4': return 'border-gray-600'; // Light grey
+      case 'HT5': return 'border-gray-800'; // Dark grey
+      case 'LT5': return 'border-gray-800'; // Dark grey
+      default: return 'border-slate-700'; // N/A default
+    }
+  };
+
   // Loop through players and generate HTML
   players.forEach(p => {
     // Define tier icons and their properties
@@ -251,12 +280,13 @@ function renderPlayers(players) {
       { category: 'mp', icon: 'user', color: 'text-purple-500', value: p.mp }
     ];
 
-    // Generate HTML for tiers
+    // Generate HTML for tiers with circular outlines
     let tiersHTML = '';
     tierIcons.forEach(tier => {
+      const borderColor = getTierBorderColor(tier.value);
       tiersHTML += `
         <div class="flex flex-col items-center gap-1">
-          <div class="w-8 h-8 flex items-center justify-center bg-slate-800/50 rounded-full">
+          <div class="w-10 h-10 flex items-center justify-center rounded-full border-2 ${borderColor} bg-slate-900/80">
             <i data-lucide="${tier.icon}" class="w-5 h-5 ${tier.color}"></i>
           </div>
           <span class="text-xs font-medium text-slate-400">${tier.value}</span>
@@ -281,7 +311,7 @@ function renderPlayers(players) {
           <h3 class="font-bold text-white text-lg">${p.player}</h3>
           <p class="text-sm ${p.titleColor} flex items-center gap-1">
             <i data-lucide="award" class="w-4 h-4"></i>
-            Combat ${p.title} (${p.totalPoints} points)
+            ${p.title} (${p.totalPoints} points)
           </p>
         </div>
         <div class="w-32 text-center">

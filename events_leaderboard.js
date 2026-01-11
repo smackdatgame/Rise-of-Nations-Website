@@ -2,7 +2,7 @@
 
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
 const SHEET_TITLE = "Events_Rank";
-const SHEET_RANGE = "A2:F20"; // Extended to column F for User ID and skip header
+const SHEET_RANGE = ""; // Extended to column F for User ID and skip header
 
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
 
@@ -29,11 +29,11 @@ async function getRobloxAvatar(userId) {
 
 // Function to determine tier based on points
 function getTierFromPoints(points) {
-  if (points >= 40) return 1;      // Tier 1: 40-50 points
-  else if (points >= 30) return 2; // Tier 2: 30-39 points
-  else if (points >= 20) return 3; // Tier 3: 20-29 points
-  else if (points >= 10) return 4; // Tier 4: 10-19 points
-  else if (points >= 1) return 5;  // Tier 5: 1-9 points
+  if (points >= 45) return 1;      // Tier 1: 45+ points
+  else if (points >= 20) return 2; // Tier 2: 20-44 points
+  else if (points >= 6) return 3; // Tier 3: 6-19 points
+  else if (points >= 3) return 4; // Tier 4: 3-5 points
+  else if (points >= 1) return 5;  // Tier 5: 1-2 points
   return 0; // No tier for 0 points
 }
 
@@ -46,6 +46,18 @@ function getTierHeaderBg(tier) {
     case 4: return 'bg-gradient-to-r from-gray-600 to-gray-700'; // Grey
     case 5: return 'bg-gradient-to-r from-gray-700 to-gray-800'; // Dark Grey
     default: return 'bg-amber-900/70';
+  }
+}
+
+// Function to get tier points text color
+function getTierPointsColor(tier) {
+  switch(tier) {
+    case 1: return 'text-yellow-400'; // Gold
+    case 2: return 'text-gray-300'; // Silver
+    case 3: return 'text-orange-400'; // Bronze
+    case 4: return 'text-gray-400'; // Grey
+    case 5: return 'text-gray-500'; // Dark Grey
+    default: return 'text-amber-400';
   }
 }
 
@@ -72,7 +84,7 @@ fetch(FULL_SHEET_URL)
       const num = row[0] ? row[0].v : (i + 1);
       const player = row[1].v;
       const region = row[2] ? row[2].v : 'NA';
-      const pubTier = row[3] ? row[3].v : 'N/A';
+      const eventsTier = row[3] ? row[3].v : 'N/A';
       const points = row[4] ? row[4].v : 0;
       const userId = row[5] ? row[5].v : null; // User ID from column F
 
@@ -103,6 +115,7 @@ fetch(FULL_SHEET_URL)
     let html = '';
     for (let t = 1; t <= 5; t++) {
       const headerBg = getTierHeaderBg(t);
+      const pointsColor = getTierPointsColor(t);
       
       html += `
         <div class="flex-1 min-w-[180px] bg-slate-900/50 rounded-xl overflow-hidden">
@@ -128,7 +141,7 @@ fetch(FULL_SHEET_URL)
                 ${avatarHTML}
                 <span class="text-white font-medium">${p.player}</span>
               </div>
-              <span class="text-amber-400 font-semibold">${p.points}</span>
+              <span class="${pointsColor} font-semibold">${p.points}</span>
             </li>
           `;
         });

@@ -1,3 +1,4 @@
+<!-- Pubs File -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +36,11 @@
   <nav class="border-b border-slate-800 bg-[#0f1419]/50 backdrop-blur-sm">
     <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
       <div class="flex items-center gap-10">
-        <h1 class="gradient-logo">rontiers</h1>
+        <div class="flex items-center gap-3">
+          <!-- Logo Image Placeholder -->
+          <img src="rontiers_icon-removebg-preview.png" alt="rontiers logo" class="w-16 h-16 object-contain">
+          <h1 class="gradient-logo">rontiers</h1>
+        </div>
         <div class="flex items-center gap-8 text-slate-400 font-medium">
           <a href="#" class="hover:text-white flex items-center gap-2">
             <i data-lucide="home" class="w-5 h-5"></i>
@@ -57,15 +62,14 @@
     <!-- Game Mode Tabs -->
     <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
       
-      <!-- Overall (Active) -->
+      <!-- Overall -->
       <a href="index.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
         <span class="text-4xl mb-2">🏆</span>
         <span class="font-medium text-slate-400">Overall</span>
       </a>
-
       
       <!-- Pubs -->
-      <a href="pubs.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
+      <a href="pubs.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors border-b-2">
         <span class="text-4xl mb-2">⚔️</span>
         <span class="font-medium text-slate-400">Pubs</span>
       </a>
@@ -76,12 +80,12 @@
         <span class="font-medium text-slate-400">Events</span>
       </a>
       
-      <!-- Tournament -->
+      <!-- Tournament (Active) -->
       <a href="tournament.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors border-b-2 border-b-white">
         <span class="text-4xl mb-2">🤺</span>
         <span class="font-medium text-slate-400">Tournament</span>
       </a>
-
+      
       <!-- Eco-Max -->
       <a href="eco-max.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
         <span class="text-4xl mb-2">💲</span>
@@ -93,7 +97,7 @@
         <span class="text-4xl mb-2">👤</span>
         <span class="font-medium text-slate-400">Mp-Max</span>
       </a>
-      
+
     </div>
 
     <!-- Bottom Info Bar -->
@@ -108,12 +112,13 @@
         <!-- Tab Headers -->
         <div class="flex border-b border-slate-800">
           <button id="titles-tab" class="flex-1 px-4 py-3 text-sm font-medium text-slate-400">Titles</button>
-          <button id="points-tab" class="flex-1 px-4 py-3 text-sm font-medium text-white bg-slate-800/50">Points</button>
+          <button id="points-tab" class="flex-1 px-4 py-3 text-sm font-medium text-slate-400">Points</button>
+          <button id="tier-test-tab" class="flex-1 px-4 py-3 text-sm font-medium text-white bg-slate-800/50">Tier Test</button>
         </div>
 
         <!-- Tab Content -->
 
-        <!-- Title -->
+        <!-- Titles -->
         <div id="titles-content" class="p-6 hidden">
           <h3 class="text-lg font-bold mb-4 text-white">How to obtain Achievement Titles</h3>
           <ul class="space-y-3 text-sm">
@@ -170,7 +175,7 @@
         </div>
 
         <!-- Points -->
-        <div id="points-content" class="p-6">
+        <div id="points-content" class="p-6 hidden">
           <h3 class="text-lg font-bold mb-6 text-white">How ranking points are calculated</h3>
           <ul class="space-y-4 text-sm text-slate-300">
             <li class="flex items-start gap-3">
@@ -204,7 +209,7 @@
             <li class="flex items-start gap-3">
               <span class="text-2xl">🏆</span>
               <div class="flex-1">
-                <div class="font-semibold text-orange-600 mb-2">Tier 3</div>
+                <div class="font-semibold text-orange-400 mb-2">Tier 3</div>
                 <div class="flex gap-2">
                   <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-orange-400 flex items-center gap-1">
                     <i data-lucide="arrow-up" class="w-4 h-4"></i> 10 Points
@@ -216,7 +221,7 @@
               </div>
             </li>
             <li class="flex items-start gap-3">
-              <span class="text-xl">📍</span>
+              <span class="text-xl">🏅</span>
               <div class="flex-1">
                 <div class="font-semibold text-slate-300 mb-2">Tier 4</div>
                 <div class="flex gap-2">
@@ -230,7 +235,7 @@
               </div>
             </li>
             <li class="flex items-start gap-3">
-              <span class="text-xl">📍</span>
+              <span class="text-xl">🏅</span>
               <div class="flex-1">
                 <div class="font-semibold text-slate-300 mb-2">Tier 5</div>
                 <div class="flex gap-2">
@@ -245,9 +250,29 @@
             </li>
           </ul>
         </div>
-      </div>
-    </div>
 
+        <!-- Tier Test -->
+        <div id="tier-test-content" class="p-6">
+          <h3 class="text-lg font-bold mb-4 text-white">How to get Tier Tested</h3>
+          <div class="text-sm text-slate-300 space-y-4">
+            <p>
+              To get tier tested, join the <a href="https://discord.gg/6abWxpRc" class="text-blue-400 hover:underline">Vanilla</a>
+               server & visit the <span class="text-slate-400">#request-test</span> 
+              channel in which you will be able to find a message to verify your account.
+            </p>
+            <p>
+              Once you verify your account you are required to fill up a form which, once done, will assign you a waitlist role.
+            </p>
+            <p>
+              Whenever there are tier testers available in your region, you will be able to join.
+            </p>
+            <p>
+              When you reach #1 in the queue, you will gain access to a private channel to schedule with your tier tester.
+            </p>
+            <p class="font-semibold text-white">Happy Testing!</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Leaderboard Header -->
@@ -257,9 +282,6 @@
         <div class="flex-1 ml-4">Player</div>
         <div class="w-32 text-center">Region</div>
         <div class="flex-1 text-right">Tiers</div>
-
-        <script src="tournament_leaderboard.js"></script>
-
       </div>
     </div>
 
@@ -270,6 +292,8 @@
 
   </main>
 
+  <script src="tournament_leaderboard.js"></script>
+
   <!-- JavaScript for Toggle and Tabs -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -277,12 +301,16 @@
       const infoDropdown = document.getElementById('info-dropdown');
       const titlesTab = document.getElementById('titles-tab');
       const pointsTab = document.getElementById('points-tab');
+      const tierTestTab = document.getElementById('tier-test-tab');
       const titlesContent = document.getElementById('titles-content');
       const pointsContent = document.getElementById('points-content');
+      const tierTestContent = document.getElementById('tier-test-content');
 
       // Toggle dropdown on button click
       infoButton.addEventListener('click', function() {
         infoDropdown.classList.toggle('hidden');
+        // Re-initialize icons when dropdown opens
+        setTimeout(() => lucide.createIcons(), 0);
       });
 
       // Close dropdown when clicking outside
@@ -298,8 +326,12 @@
         titlesTab.classList.remove('text-slate-400');
         pointsTab.classList.add('text-slate-400');
         pointsTab.classList.remove('text-white', 'bg-slate-800/50');
+        tierTestTab.classList.add('text-slate-400');
+        tierTestTab.classList.remove('text-white', 'bg-slate-800/50');
+        
         titlesContent.classList.remove('hidden');
         pointsContent.classList.add('hidden');
+        tierTestContent.classList.add('hidden');
       });
 
       pointsTab.addEventListener('click', function() {
@@ -307,8 +339,27 @@
         pointsTab.classList.remove('text-slate-400');
         titlesTab.classList.add('text-slate-400');
         titlesTab.classList.remove('text-white', 'bg-slate-800/50');
+        tierTestTab.classList.add('text-slate-400');
+        tierTestTab.classList.remove('text-white', 'bg-slate-800/50');
+        
         pointsContent.classList.remove('hidden');
         titlesContent.classList.add('hidden');
+        tierTestContent.classList.add('hidden');
+        // Re-initialize icons when switching to points tab
+        setTimeout(() => lucide.createIcons(), 0);
+      });
+
+      tierTestTab.addEventListener('click', function() {
+        tierTestTab.classList.add('text-white', 'bg-slate-800/50');
+        tierTestTab.classList.remove('text-slate-400');
+        titlesTab.classList.add('text-slate-400');
+        titlesTab.classList.remove('text-white', 'bg-slate-800/50');
+        pointsTab.classList.add('text-slate-400');
+        pointsTab.classList.remove('text-white', 'bg-slate-800/50');
+        
+        tierTestContent.classList.remove('hidden');
+        titlesContent.classList.add('hidden');
+        pointsContent.classList.add('hidden');
       });
     });
   </script>
