@@ -1,40 +1,44 @@
 // leaderboard.js
 
 // Define constants for Google Sheets API access
-const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs"; // ID of the Google Spreadsheet
-const SHEET_TITLE = "Overall_Rank"; // Name of the sheet to fetch data from
-const SHEET_RANGE = ""; // Start from A2 to skip header row
+const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
+const SHEET_TITLE = "Overall_Rank";
+const SHEET_RANGE = "A2:D"; // Start from A2 to skip header, include columns A-D
 
-// Define all ranking sheets
+// Define all ranking sheets with proper ranges
 const PUBS_SHEET_TITLE = "Pubs_Rank";
-const PUBS_SHEET_RANGE = "";
+const PUBS_SHEET_RANGE = "A2:E"; // Include Points column (E)
 
 const EVENTS_SHEET_TITLE = "Events_Rank";
-const EVENTS_SHEET_RANGE = "";
+const EVENTS_SHEET_RANGE = "A2:E";
 
-const TOURNAMENTS_SHEET_TITLE = "Tournaments_Rank";
-const TOURNAMENTS_SHEET_RANGE = "";
+const SPEEDRUN_SHEET_TITLE = "Speedrun_Rank";
+const SPEEDRUN_SHEET_RANGE = "A2:E";
 
-const ECOMAX_SHEET_TITLE = "EcoMax_Rank";
-const ECOMAX_SHEET_RANGE = "";
+const FRONTLINE_SHEET_TITLE = "Frontline_Rank";
+const FRONTLINE_SHEET_RANGE = "A2:E";
 
-const MPMAX_SHEET_TITLE = "MpMax_Rank";
-const MPMAX_SHEET_RANGE = "";
+const SUPPORT_SHEET_TITLE = "Support_Rank";
+const SUPPORT_SHEET_RANGE = "A2:E";
+
+const TEAM_EVENTS_SHEET_TITLE = "Team_Events_Rank";
+const TEAM_EVENTS_SHEET_RANGE = "A2:E";
 
 // Construct URLs for fetching data from Google Sheets
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
 const PUBS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${PUBS_SHEET_TITLE}&range=${PUBS_SHEET_RANGE}`;
 const EVENTS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${EVENTS_SHEET_TITLE}&range=${EVENTS_SHEET_RANGE}`;
-const TOURNAMENTS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${TOURNAMENTS_SHEET_TITLE}&range=${TOURNAMENTS_SHEET_RANGE}`;
-const ECOMAX_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${ECOMAX_SHEET_TITLE}&range=${ECOMAX_SHEET_RANGE}`;
-const MPMAX_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${MPMAX_SHEET_TITLE}&range=${MPMAX_SHEET_RANGE}`;
+const SPEEDRUN_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SPEEDRUN_SHEET_TITLE}&range=${SPEEDRUN_SHEET_RANGE}`;
+const FRONTLINE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${FRONTLINE_SHEET_TITLE}&range=${FRONTLINE_SHEET_RANGE}`;
+const SUPPORT_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SUPPORT_SHEET_TITLE}&range=${SUPPORT_SHEET_RANGE}`;
+const TEAM_EVENTS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${TEAM_EVENTS_SHEET_TITLE}&range=${TEAM_EVENTS_SHEET_RANGE}`;
 
 // Initialize an array to store all player data
 let allPlayers = [];
 
 // Function to convert points to tier string
 function pointsToTier(points) {
-  if (points === 0) return 'N/A';
+  if (!points || points === 0) return 'N/A';
   if (points >= 60) return 'HT1';
   else if (points >= 45) return 'LT1';
   else if (points >= 30) return 'HT2';
@@ -58,7 +62,6 @@ async function getRobloxAvatar(userId) {
   console.log(`Fetching avatar for userId: ${userId}`);
   
   try {
-    // Using a CORS proxy to avoid CORS issues
     const proxyUrl = 'https://corsproxy.io/?';
     const apiUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
     
@@ -89,12 +92,16 @@ async function fetchRankingPoints(sheetUrl, sheetName) {
     
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i] ? rows[i].c : null;
-      if (!row || !row[1] || !row[1].v) continue;
+      if (!row) continue;
       
-      const player = row[1].v; // Player name
-      const points = row[4] ? row[4].v : 0; // Points from column E
+      // Column A (index 0) = Player name
+      // Column C (index 2) = Points
+      const player = row[0] && row[0].v ? row[0].v : null;
+      const points = row[2] && row[2].v !== null ? row[2].v : 0;
       
-      pointsMap[player] = points;
+      if (player) {
+        pointsMap[player] = points;
+      }
     }
     
     console.log(`${sheetName} points map:`, pointsMap);
@@ -110,49 +117,59 @@ Promise.all([
   fetch(FULL_SHEET_URL).then(res => res.text()),
   fetchRankingPoints(PUBS_SHEET_URL, 'Pubs_Rank'),
   fetchRankingPoints(EVENTS_SHEET_URL, 'Events_Rank'),
-  fetchRankingPoints(TOURNAMENTS_SHEET_URL, 'Tournaments_Rank'),
-  fetchRankingPoints(ECOMAX_SHEET_URL, 'EcoMax_Rank'),
-  fetchRankingPoints(MPMAX_SHEET_URL, 'MpMax_Rank')
+  fetchRankingPoints(SPEEDRUN_SHEET_URL, 'Speedrun_Rank'),
+  fetchRankingPoints(FRONTLINE_SHEET_URL, 'Frontline_Rank'),
+  fetchRankingPoints(SUPPORT_SHEET_URL, 'Support_Rank'),
+  fetchRankingPoints(TEAM_EVENTS_SHEET_URL, 'Team_Events_Rank')
 ])
-  .then(async ([rep, pubsPointsMap, eventsPointsMap, tournamentsPointsMap, ecoMaxPointsMap, mpMaxPointsMap]) => {
-    // Parse the response to extract JSON data (Google Sheets specific parsing)
+  .then(async ([rep, pubsPointsMap, eventsPointsMap, speedrunPointsMap, frontlinePointsMap, supportPointsMap, teamEventsPointsMap]) => {
+    // Parse the response to extract JSON data
     const data = JSON.parse(rep.substring(47).slice(0, -2));
     const rows = data.table.rows;
 
     console.log('Total rows:', rows.length);
+    console.log('Full data structure:', data);
 
-    // Process each row starting from index 0 (header already skipped in SHEET_RANGE)
+    // Process each row
     for (let i = 0; i < rows.length; i++) {
-      const row = rows[i].c || []; // Handle potential missing cells
+      const row = rows[i].c || [];
 
-      // Extract cell values with fallbacks
-      const player = row[1] ? row[1].v : 'Unknown'; // Player name
-      const region = row[2] ? row[2].v : 'NA'; // Region
-      const userId = row[8] ? row[8].v : null; // User ID
+      // Based on your spreadsheet:
+      // Column A (index 0) = Player
+      // Column B (index 1) = Region
+      // Column C (index 2) = User ID (not column I/index 8)
+      const player = row[0] && row[0].v ? row[0].v : null;
+      const region = row[1] && row[1].v ? row[1].v : 'NA';
+      const userId = row[2] && row[2].v ? String(row[2].v) : null;
 
-      console.log(`Row ${i + 1}: Player=${player}, UserId=${userId}`);
+      console.log(`Row ${i + 1}: Player=${player}, Region=${region}, UserId=${userId}`);
 
       // Skip invalid rows
-      if (!player || player === 'Unknown') continue;
+      if (!player) {
+        console.log(`Skipping row ${i + 1} - no player name`);
+        continue;
+      }
 
-      // Get points from respective ranking sheets (default to 0 if not found)
+      // Get points from respective ranking sheets
       const pubPoints = pubsPointsMap[player] || 0;
       const eventPoints = eventsPointsMap[player] || 0;
-      const tournamentPoints = tournamentsPointsMap[player] || 0;
-      const ecoPoints = ecoMaxPointsMap[player] || 0;
-      const mpPoints = mpMaxPointsMap[player] || 0;
+      const speedrunPoints = speedrunPointsMap[player] || 0;
+      const frontlinePoints = frontlinePointsMap[player] || 0;
+      const supportPoints = supportPointsMap[player] || 0;
+      const teamEventsPoints = teamEventsPointsMap[player] || 0;
 
       // Convert points to tier strings
       const pub = pointsToTier(pubPoints);
       const event = pointsToTier(eventPoints);
-      const tournament = pointsToTier(tournamentPoints);
-      const eco = pointsToTier(ecoPoints);
-      const mp = pointsToTier(mpPoints);
+      const speedrun = pointsToTier(speedrunPoints);
+      const frontline = pointsToTier(frontlinePoints);
+      const support = pointsToTier(supportPoints);
+      const teamEvents = pointsToTier(teamEventsPoints);
 
       // Sum up total points
-      const totalPoints = pubPoints + eventPoints + tournamentPoints + ecoPoints + mpPoints;
+      const totalPoints = pubPoints + eventPoints + speedrunPoints + frontlinePoints + supportPoints + teamEventsPoints;
 
-      console.log(`${player}: pub=${pubPoints}(${pub}), event=${eventPoints}(${event}), tournament=${tournamentPoints}(${tournament}), eco=${ecoPoints}(${eco}), mp=${mpPoints}(${mp}), total=${totalPoints}`);
+      console.log(`${player}: pub=${pubPoints}(${pub}), event=${eventPoints}(${event}), speedrun=${speedrunPoints}(${speedrun}), frontline=${frontlinePoints}(${frontline}), support=${supportPoints}(${support}), teamEvents=${teamEventsPoints}(${teamEvents}), total=${totalPoints}`);
 
       // Determine title based on total points
       let title = 'Rookie';
@@ -163,14 +180,14 @@ Promise.all([
       else if (totalPoints >= 50) title = 'Cadet';
       else if (totalPoints >= 10) title = 'Novice';
 
-      // Assign color class for title based on the screenshot colors
-      let titleColor = 'text-gray-400'; // Rookie - gray
-      if (title === 'Grandmaster') titleColor = 'text-yellow-400'; // Yellow/gold
-      else if (title === 'Master') titleColor = 'text-yellow-500'; // Yellow/gold
-      else if (title === 'Ace') titleColor = 'text-pink-500'; // Pink
-      else if (title === 'Specialist') titleColor = 'text-purple-500'; // Purple
-      else if (title === 'Cadet') titleColor = 'text-blue-400'; // Blue
-      else if (title === 'Novice') titleColor = 'text-blue-400'; // Blue
+      // Assign color class for title
+      let titleColor = 'text-gray-400';
+      if (title === 'Grandmaster') titleColor = 'text-yellow-400';
+      else if (title === 'Master') titleColor = 'text-yellow-500';
+      else if (title === 'Ace') titleColor = 'text-pink-500';
+      else if (title === 'Specialist') titleColor = 'text-purple-500';
+      else if (title === 'Cadet') titleColor = 'text-blue-400';
+      else if (title === 'Novice') titleColor = 'text-blue-400';
 
       // Assign colors for region badge
       let regionBg = 'bg-red-900/50';
@@ -181,22 +198,29 @@ Promise.all([
       } else if (region === 'ASIA') {
         regionBg = 'bg-blue-900/50';
         regionText = 'text-blue-300';
+      } else if (region === 'OC') {
+        regionBg = 'bg-purple-900/50';
+        regionText = 'text-purple-300';
+      } else if (region === 'AFRICA' || region === 'AF') {
+        regionBg = 'bg-orange-900/50';
+        regionText = 'text-orange-300';
       }
 
-      // Get Roblox avatar using the User ID from the spreadsheet
+      // Get Roblox avatar
       const avatarUrl = await getRobloxAvatar(userId);
       console.log(`Avatar URL for ${player}:`, avatarUrl);
 
-      // Store player data in the array (without rank number yet)
+      // Store player data
       allPlayers.push({
-        num: 0, // Will be assigned after sorting
+        num: 0,
         player,
         region,
         pub,
         event,
-        tournament,
-        eco,
-        mp,
+        speedrun,
+        frontline,
+        support,
+        teamEvents,
         totalPoints,
         title,
         titleColor,
@@ -206,9 +230,10 @@ Promise.all([
         userId,
         pubPoints,
         eventPoints,
-        tournamentPoints,
-        ecoPoints,
-        mpPoints
+        speedrunPoints,
+        frontlinePoints,
+        supportPoints,
+        teamEventsPoints
       });
     }
 
@@ -217,7 +242,7 @@ Promise.all([
     // Sort players by total points (highest to lowest)
     allPlayers.sort((a, b) => b.totalPoints - a.totalPoints);
     
-    // Reassign rank numbers based on sorted order
+    // Reassign rank numbers
     allPlayers.forEach((player, index) => {
       player.num = index + 1;
     });
@@ -232,40 +257,56 @@ Promise.all([
     if (searchInput) {
       searchInput.addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
-        // Filter players based on search term
-        const filteredPlayers = allPlayers.filter(p => p.player.toLowerCase().includes(searchTerm));
+        const filteredPlayers = allPlayers.filter(p => 
+          p.player.toLowerCase().includes(searchTerm)
+        );
         renderPlayers(filteredPlayers);
       });
     }
 
     // Initialize Lucide icons
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
   })
   .catch(error => {
-    // Log any errors during fetch
     console.error('Error fetching spreadsheet data:', error);
+    // Display error message to user
+    const container = document.querySelector('.mt-4.space-y-3');
+    if (container) {
+      container.innerHTML = `
+        <div class="bg-red-900/50 rounded-xl px-6 py-4 text-center">
+          <p class="text-red-300 font-medium">Error loading leaderboard data</p>
+          <p class="text-red-400 text-sm mt-2">${error.message}</p>
+        </div>
+      `;
+    }
   });
 
 // Function to render players to the DOM
 function renderPlayers(players) {
-  // Select the container for player rows
   const container = document.querySelector('.mt-4.space-y-3');
-  container.innerHTML = ''; // Clear existing content
+  if (!container) {
+    console.error('Container not found');
+    return;
+  }
+  
+  container.innerHTML = '';
 
   // Function to get tier border color
   const getTierBorderColor = (tier) => {
     switch(tier) {
-      case 'HT1': return 'border-yellow-200'; // Light gold
-      case 'LT1': return 'border-yellow-500'; // Dark gold
-      case 'HT2': return 'border-gray-200'; // Light silver
-      case 'LT2': return 'border-gray-400'; // Dark silver
-      case 'HT3': return 'border-orange-500'; // Light bronze
-      case 'LT3': return 'border-orange-800'; // Dark bronze
-      case 'HT4': return 'border-gray-600'; // Light grey
-      case 'LT4': return 'border-gray-600'; // Light grey
-      case 'HT5': return 'border-gray-800'; // Dark grey
-      case 'LT5': return 'border-gray-800'; // Dark grey
-      default: return 'border-slate-700'; // N/A default
+      case 'HT1': return 'border-yellow-200';
+      case 'LT1': return 'border-yellow-500';
+      case 'HT2': return 'border-gray-200';
+      case 'LT2': return 'border-gray-400';
+      case 'HT3': return 'border-orange-500';
+      case 'LT3': return 'border-orange-800';
+      case 'HT4': return 'border-gray-600';
+      case 'LT4': return 'border-gray-600';
+      case 'HT5': return 'border-gray-800';
+      case 'LT5': return 'border-gray-800';
+      default: return 'border-slate-700';
     }
   };
 
@@ -274,13 +315,14 @@ function renderPlayers(players) {
     // Define tier icons and their properties
     const tierIcons = [
       { category: 'pub', icon: 'swords', color: 'text-green-400', value: p.pub },
-      { category: 'event', icon: 'globe', color: 'text-purple-400', value: p.event },
-      { category: 'tournament', icon: 'target', color: 'text-red-500', value: p.tournament },
-      { category: 'eco', icon: 'dollar-sign', color: 'text-green-500', value: p.eco },
-      { category: 'mp', icon: 'user', color: 'text-purple-500', value: p.mp }
+      { category: 'event', icon: 'user', color: 'text-purple-400', value: p.event },
+      { category: 'speedrun', icon: 'zap', color: 'text-red-500', value: p.speedrun },
+      { category: 'frontline', icon: 'shield', color: 'text-blue-500', value: p.frontline },
+      { category: 'support', icon: 'dollar-sign', color: 'text-pink-500', value: p.support },
+      { category: 'teamEvents', icon: 'globe', color: 'text-cyan-400', value: p.teamEvents }
     ];
 
-    // Generate HTML for tiers with circular outlines
+    // Generate HTML for tiers
     let tiersHTML = '';
     tierIcons.forEach(tier => {
       const borderColor = getTierBorderColor(tier.value);
@@ -323,10 +365,11 @@ function renderPlayers(players) {
       </div>
     `;
 
-    // Append row to container
     container.innerHTML += rowHTML;
   });
 
-  // Re-initialize Lucide icons after updating DOM
-  lucide.createIcons();
+  // Re-initialize Lucide icons
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 }

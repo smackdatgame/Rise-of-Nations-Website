@@ -1,7 +1,7 @@
-// pubs_leaderboard.js
+// frontline_leaderboard.js
 
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
-const SHEET_TITLE = "Pubs_Rank";
+const SHEET_TITLE = "Frontline_Rank";
 const SHEET_RANGE = "A2:D"; // Columns A-D starting from row 2 to skip header
 
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
@@ -194,7 +194,7 @@ fetch(FULL_SHEET_URL)
     if (container) {
       container.innerHTML = `
         <div class="bg-red-900/50 rounded-xl px-6 py-4 text-center">
-          <p class="text-red-300 font-medium">Error loading Pubs leaderboard data</p>
+          <p class="text-red-300 font-medium">Error loading Frontline leaderboard data</p>
           <p class="text-red-400 text-sm mt-2">${error.message}</p>
         </div>
       `;

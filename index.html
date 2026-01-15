@@ -6,6 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>rontiers - Rankings</title>
   
+  <!-- Favicon - Multiple sizes for better display -->
+  <link rel="icon" type="image/png" sizes="32x32" href="rontiers_icon-removebg-preview.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="rontiers_icon-removebg-preview.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="rontiers_icon-removebg-preview.png">
+  <link rel="shortcut icon" href="rontiers_icon-removebg-preview.png">
+  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -49,10 +55,84 @@
       <!-- Search -->
       <div class="relative">
         <i data-lucide="search" class="w-5 h-5 absolute left-4 top-3.5 text-slate-500"></i>
-        <input type="text" placeholder="Search player..." class="bg-slate-800/70 border border-slate-700 rounded-full pl-12 pr-6 py-3 w-80 focus:outline-none focus:border-slate-600 text-slate-300">
+        <input id="player-search" type="text" placeholder="Search player..." class="bg-slate-800/70 border border-slate-700 rounded-full pl-12 pr-6 py-3 w-80 focus:outline-none focus:border-slate-600 text-slate-300">
+        
+        <!-- Search Results Dropdown -->
+        <div id="search-results" class="absolute top-full left-0 right-0 mt-2 bg-[#0f1419] border border-slate-800 rounded-xl shadow-lg hidden max-h-96 overflow-y-auto z-50">
+          <!-- Results will be populated here -->
+        </div>
       </div>
     </div>
   </nav>
+
+  <!-- Player Modal -->
+  <div id="player-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-gradient-to-b from-[#1e2936] to-[#16202e] rounded-2xl w-full max-w-xl shadow-2xl relative animate-fade-in" style="max-height: 90vh; overflow-y: auto;">
+      <!-- Close Button -->
+      <button id="close-modal" class="absolute top-4 right-4 w-10 h-10 bg-slate-700/70 hover:bg-slate-600/70 rounded-full flex items-center justify-center transition-all hover:scale-110 z-10">
+        <i data-lucide="x" class="w-5 h-5 text-slate-200"></i>
+      </button>
+
+      <!-- Modal Content -->
+      <div class="p-6">
+        <!-- Player Avatar & Name -->
+        <div class="flex flex-col items-center mb-4">
+          <div id="modal-avatar" class="w-28 h-28 rounded-full border-4 border-orange-500 mb-3 bg-slate-800 flex items-center justify-center overflow-hidden shadow-xl">
+            <!-- Avatar will be inserted here -->
+          </div>
+          <h2 id="modal-player-name" class="text-2xl font-bold text-yellow-400 mb-2 text-center">Player Name</h2>
+          <div id="modal-title" class="px-4 py-1.5 bg-gradient-to-r from-yellow-600 to-yellow-700 rounded-full text-white text-sm font-semibold flex items-center gap-2 shadow-lg">
+            <i data-lucide="award" class="w-4 h-4"></i>
+            <span>Title</span>
+          </div>
+        </div>
+
+        <!-- Region -->
+        <div class="text-center mb-4">
+          <p id="modal-region" class="text-slate-300 text-lg font-medium">Region</p>
+        </div>
+
+        <!-- Position Section -->
+        <div class="bg-slate-800/30 rounded-xl p-3 mb-4 border border-slate-700/50">
+          <h3 class="text-slate-400 text-xs uppercase tracking-wider mb-2 font-semibold">Position</h3>
+          <div class="flex items-center gap-3 bg-gradient-to-r from-orange-900/50 to-orange-800/50 rounded-xl p-3 border border-orange-700/30">
+            <div class="text-4xl font-black text-orange-400" id="modal-rank">#1.</div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2">
+                <i data-lucide="trophy" class="w-5 h-5 text-yellow-400"></i>
+                <span class="text-white font-bold">OVERALL</span>
+              </div>
+              <span id="modal-total-points" class="text-slate-300 text-sm">(0 points)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tiers Section -->
+        <div class="bg-slate-800/30 rounded-xl p-3 border border-slate-700/50">
+          <h3 class="text-slate-400 text-xs uppercase tracking-wider mb-3 font-semibold">Tiers</h3>
+          <div id="modal-tiers" class="flex justify-center gap-3 flex-wrap">
+            <!-- Tier icons will be inserted here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .animate-fade-in {
+      animation: fade-in 0.2s ease-out;
+    }
+  </style>
 
   <main class="max-w-7xl mx-auto px-6 py-10">
 
@@ -68,31 +148,37 @@
       <!-- Pubs -->
       <a href="pubs.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
         <span class="text-4xl mb-2">⚔️</span>
-        <span class="font-medium text-slate-400">Pubs</span>
+        <span class="font-medium text-slate-400">Pub 1v1</span>
       </a>
       
       <!-- Events -->
       <a href="events.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
-        <span class="text-4xl mb-2">🌐</span>
-        <span class="font-medium text-slate-400">Events</span>
+        <span class="text-4xl mb-2">👥</span>
+        <span class="font-medium text-slate-400">Event 1v1</span>
       </a>
       
-      <!-- Tournament -->
-      <a href="tournament.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
-        <span class="text-4xl mb-2">🤺</span>
-        <span class="font-medium text-slate-400">Tournament</span>
+      <!-- Speedrun -->
+      <a href="speedrunning.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
+        <span class="text-4xl mb-2">⚡</span>
+        <span class="font-medium text-slate-400">Speedrun</span>
       </a>
       
-      <!-- Eco-Max -->
-      <a href="eco-max.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
+      <!-- Frontline -->
+      <a href="frontline.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
+        <span class="text-4xl mb-2">🛡️</span>
+        <span class="font-medium text-slate-400">Frontline</span>
+      </a>
+      
+      <!-- Support -->
+      <a href="support.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
         <span class="text-4xl mb-2">💲</span>
-        <span class="font-medium text-slate-400">Eco-Max</span>
+        <span class="font-medium text-slate-400">Support</span>
       </a>
-      
-      <!-- Mp-Max -->
-      <a href="mp-max.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
-        <span class="text-4xl mb-2">👤</span>
-        <span class="font-medium text-slate-400">Mp-Max</span>
+
+      <!-- Team Events -->
+      <a href="team_events.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
+        <span class="text-4xl mb-2"> 🌐 </span>
+        <span class="font-medium text-slate-400">Team Events</span>
       </a>
       
     </div>
@@ -268,7 +354,7 @@
 
   <script src="leaderboard.js"></script>
 
-  <!-- JavaScript for Toggle and Tabs -->
+  <!-- JavaScript for Toggle, Tabs, and Player Search -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       const infoButton = document.getElementById('info-button');
@@ -277,11 +363,14 @@
       const pointsTab = document.getElementById('points-tab');
       const titlesContent = document.getElementById('titles-content');
       const pointsContent = document.getElementById('points-content');
+      const playerSearch = document.getElementById('player-search');
+      const searchResults = document.getElementById('search-results');
+      const playerModal = document.getElementById('player-modal');
+      const closeModal = document.getElementById('close-modal');
 
       // Toggle dropdown on button click
       infoButton.addEventListener('click', function() {
         infoDropdown.classList.toggle('hidden');
-        // Re-initialize icons when dropdown opens
         setTimeout(() => lucide.createIcons(), 0);
       });
 
@@ -289,6 +378,9 @@
       document.addEventListener('click', function(event) {
         if (!infoButton.contains(event.target) && !infoDropdown.contains(event.target)) {
           infoDropdown.classList.add('hidden');
+        }
+        if (!playerSearch.contains(event.target) && !searchResults.contains(event.target)) {
+          searchResults.classList.add('hidden');
         }
       });
 
@@ -309,8 +401,159 @@
         titlesTab.classList.remove('text-white', 'bg-slate-800/50');
         pointsContent.classList.remove('hidden');
         titlesContent.classList.add('hidden');
-        // Re-initialize icons when switching to points tab
         setTimeout(() => lucide.createIcons(), 0);
+      });
+
+      // Player search functionality
+      playerSearch.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        if (searchTerm.length === 0) {
+          searchResults.classList.add('hidden');
+          return;
+        }
+
+        // Filter players from allPlayers array (defined in leaderboard.js)
+        if (typeof allPlayers !== 'undefined') {
+          const filteredPlayers = allPlayers.filter(p => 
+            p.player.toLowerCase().includes(searchTerm)
+          ).slice(0, 5); // Show max 5 results
+
+          if (filteredPlayers.length > 0) {
+            searchResults.innerHTML = filteredPlayers.map(p => {
+              const avatarHTML = p.avatarUrl 
+                ? `<img src="${p.avatarUrl}" alt="${p.player}" class="w-10 h-10 rounded-full">`
+                : `<div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold">${p.player.charAt(0).toUpperCase()}</div>`;
+              
+              return `
+                <div class="search-result-item px-4 py-3 hover:bg-slate-800/70 cursor-pointer flex items-center gap-3 border-b border-slate-800 last:border-b-0" data-player="${p.player}">
+                  ${avatarHTML}
+                  <div class="flex-1">
+                    <div class="font-semibold text-white">${p.player}</div>
+                    <div class="text-xs text-slate-400">#${p.num} • ${p.totalPoints} points</div>
+                  </div>
+                  <span class="px-2 py-1 rounded text-xs ${p.regionBg} ${p.regionText}">${p.region}</span>
+                </div>
+              `;
+            }).join('');
+            searchResults.classList.remove('hidden');
+
+            // Add click handlers to search results
+            document.querySelectorAll('.search-result-item').forEach(item => {
+              item.addEventListener('click', function() {
+                const playerName = this.getAttribute('data-player');
+                const player = allPlayers.find(p => p.player === playerName);
+                if (player) {
+                  showPlayerModal(player);
+                  searchResults.classList.add('hidden');
+                  playerSearch.value = '';
+                }
+              });
+            });
+          } else {
+            searchResults.innerHTML = '<div class="px-4 py-3 text-center text-slate-400">No players found</div>';
+            searchResults.classList.remove('hidden');
+          }
+        }
+      });
+
+      // Function to show player modal
+      window.showPlayerModal = function(player) {
+        // Set avatar
+        const modalAvatar = document.getElementById('modal-avatar');
+        if (player.avatarUrl) {
+          modalAvatar.innerHTML = `<img src="${player.avatarUrl}" alt="${player.player}" class="w-full h-full rounded-full object-cover">`;
+        } else {
+          modalAvatar.innerHTML = `<div class="text-5xl font-bold">${player.player.charAt(0).toUpperCase()}</div>`;
+        }
+
+        // Set player name
+        document.getElementById('modal-player-name').textContent = player.player;
+
+        // Set title with color
+        const modalTitle = document.getElementById('modal-title');
+        modalTitle.innerHTML = `
+          <i data-lucide="award" class="w-5 h-5"></i>
+          <span>${player.title}</span>
+        `;
+        
+        // Update title background based on title
+        let titleBg = 'from-gray-600 to-gray-700';
+        if (player.title === 'Grandmaster' || player.title === 'Master') titleBg = 'from-yellow-600 to-yellow-700';
+        else if (player.title === 'Ace') titleBg = 'from-pink-600 to-pink-700';
+        else if (player.title === 'Specialist') titleBg = 'from-purple-600 to-purple-700';
+        else if (player.title === 'Cadet' || player.title === 'Novice') titleBg = 'from-blue-600 to-blue-700';
+        
+        modalTitle.className = `px-4 py-2 bg-gradient-to-r ${titleBg} rounded-full text-white font-semibold flex items-center gap-2`;
+
+        // Set region
+        document.getElementById('modal-region').textContent = player.region;
+
+        // Set rank and points
+        document.getElementById('modal-rank').textContent = `#${player.num}.`;
+        document.getElementById('modal-total-points').textContent = `(${player.totalPoints} points)`;
+
+        // Set tiers
+        const modalTiers = document.getElementById('modal-tiers');
+        const tierIcons = [
+          { icon: 'swords', color: 'text-green-400', bg: 'bg-green-900', value: player.pub, points: player.pubPoints, label: 'Pubs' },
+          { icon: 'globe', color: 'text-purple-400', bg: 'bg-purple-900', value: player.event, points: player.eventPoints, label: 'Events' },
+          { icon: 'target', color: 'text-red-500', bg: 'bg-red-900', value: player.speedrun, points: player.speedrunPoints, label: 'Speedrun' },
+          { icon: 'shield', color: 'text-blue-500', bg: 'bg-blue-900', value: player.frontline, points: player.frontlinePoints, label: 'Frontline' },
+          { icon: 'dollar-sign', color: 'text-pink-500', bg: 'bg-pink-900', value: player.support, points: player.supportPoints, label: 'Support' },
+          { icon: 'users', color: 'text-cyan-400', bg: 'bg-cyan-900', value: player.teamEvents, points: player.teamEventsPoints, label: 'Team Events' }
+        ];
+
+        const getTierBorderColor = (tier) => {
+          switch(tier) {
+            case 'HT1': return 'border-yellow-200';
+            case 'LT1': return 'border-yellow-500';
+            case 'HT2': return 'border-gray-200';
+            case 'LT2': return 'border-gray-400';
+            case 'HT3': return 'border-orange-500';
+            case 'LT3': return 'border-orange-800';
+            case 'HT4': return 'border-gray-600';
+            case 'LT4': return 'border-gray-600';
+            case 'HT5': return 'border-gray-800';
+            case 'LT5': return 'border-gray-800';
+            default: return 'border-slate-700';
+          }
+        };
+
+        modalTiers.innerHTML = tierIcons.map(tier => {
+          const borderColor = getTierBorderColor(tier.value);
+          return `
+            <div class="flex flex-col items-center gap-1">
+              <div class="w-12 h-12 flex items-center justify-center rounded-full border-2 ${borderColor} ${tier.bg}/40 relative shadow-md">
+                <i data-lucide="${tier.icon}" class="w-6 h-6 ${tier.color}"></i>
+              </div>
+              <span class="text-xs font-bold text-white">${tier.value}</span>
+              <span class="text-xs text-slate-400">${tier.points || 0}pts</span>
+            </div>
+          `;
+        }).join('');
+
+        playerModal.classList.remove('hidden');
+        setTimeout(() => lucide.createIcons(), 0);
+      };
+
+      // Close modal
+      closeModal.addEventListener('click', function() {
+        playerModal.classList.add('hidden');
+      });
+
+      // Close modal when clicking outside
+      playerModal.addEventListener('click', function(e) {
+        if (e.target === playerModal) {
+          playerModal.classList.add('hidden');
+        }
+      });
+
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !playerModal.classList.contains('hidden')) {
+          playerModal.classList.add('hidden');
+        }
       });
     });
   </script>

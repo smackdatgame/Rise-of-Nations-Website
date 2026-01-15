@@ -1,4 +1,4 @@
-<!-- Pubs File -->
+<!-- Support File -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -148,8 +148,8 @@
         <span class="font-medium text-slate-400">Overall</span>
       </a>
       
-      <!-- Pubs (Active) -->
-      <a href="pubs.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors border-b-2 border-b-white">
+      <!-- Pubs -->
+      <a href="pubs.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
         <span class="text-4xl mb-2">⚔️</span>
         <span class="font-medium text-slate-400">Pub 1v1</span>
       </a>
@@ -172,8 +172,8 @@
         <span class="font-medium text-slate-400">Frontline</span>
       </a>
       
-      <!-- Support -->
-      <a href="support.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
+      <!-- Support (Active) -->
+      <a href="support.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors border-b-2 border-b-white">
         <span class="text-4xl mb-2">💲</span>
         <span class="font-medium text-slate-400">Support</span>
       </a>
@@ -378,7 +378,7 @@
 
   </main>
 
-  <script src="pubs_leaderboard.js"></script>
+  <script src="support_leaderboard.js"></script>
 
   <!-- JavaScript for Toggle, Tabs, and Player Search -->
   <script>
@@ -464,7 +464,7 @@
           return;
         }
 
-        // Filter players from allPlayers array (defined in pubs_leaderboard.js)
+        // Filter players from allPlayers array (defined in support_leaderboard.js)
         if (typeof allPlayers !== 'undefined') {
           const filteredPlayers = allPlayers.filter(p => 
             p.player.toLowerCase().includes(searchTerm)

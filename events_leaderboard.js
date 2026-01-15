@@ -1,14 +1,19 @@
-// leaderboard.js
+// events_leaderboard.js
 
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
 const SHEET_TITLE = "Events_Rank";
-const SHEET_RANGE = ""; // Extended to column F for User ID and skip header
+const SHEET_RANGE = "A2:D"; // Columns A-D starting from row 2 to skip header
 
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
 
 // Function to get Roblox avatar headshot using a CORS proxy
 async function getRobloxAvatar(userId) {
-  if (!userId) return null;
+  if (!userId) {
+    console.log('No userId provided');
+    return null;
+  }
+  
+  console.log(`Fetching avatar for userId: ${userId}`);
   
   try {
     const proxyUrl = 'https://corsproxy.io/?';
@@ -16,6 +21,7 @@ async function getRobloxAvatar(userId) {
     
     const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
     const data = await response.json();
+    console.log(`Avatar response for ${userId}:`, data);
     
     if (data.data && data.data.length > 0 && data.data[0].state === 'Completed') {
       return data.data[0].imageUrl;
@@ -29,11 +35,16 @@ async function getRobloxAvatar(userId) {
 
 // Function to determine tier based on points
 function getTierFromPoints(points) {
-  if (points >= 45) return 1;      // Tier 1: 45+ points
-  else if (points >= 20) return 2; // Tier 2: 20-44 points
-  else if (points >= 6) return 3; // Tier 3: 6-19 points
-  else if (points >= 3) return 4; // Tier 4: 3-5 points
-  else if (points >= 1) return 5;  // Tier 5: 1-2 points
+  if (points >= 60) return 1;      // HT1: 60+ points
+  else if (points >= 45) return 1; // LT1: 45-59 points
+  else if (points >= 30) return 2; // HT2: 30-44 points
+  else if (points >= 20) return 2; // LT2: 20-29 points
+  else if (points >= 10) return 3; // HT3: 10-19 points
+  else if (points >= 6) return 3;  // LT3: 6-9 points
+  else if (points >= 4) return 4;  // HT4: 4-5 points
+  else if (points >= 3) return 4;  // LT4: 3 points
+  else if (points >= 2) return 5;  // HT5: 2 points
+  else if (points >= 1) return 5;  // LT5: 1 point
   return 0; // No tier for 0 points
 }
 
@@ -68,6 +79,9 @@ fetch(FULL_SHEET_URL)
     const rows = data.table.rows;
     const container = document.querySelector('.mt-4.space-y-3');
 
+    console.log('Total rows:', rows.length);
+    console.log('Data structure:', data);
+
     // Clear existing content if any
     container.innerHTML = '';
     container.classList.remove('space-y-3');
@@ -76,20 +90,36 @@ fetch(FULL_SHEET_URL)
     // Group players by tier
     let tierGroups = {1: [], 2: [], 3: [], 4: [], 5: []};
 
-    // Process rows (header already skipped in SHEET_RANGE)
+    // Process rows
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i] ? rows[i].c : null;
-      if (!row || !row[1] || !row[1].v) continue; // Skip empty or invalid rows
+      if (!row) {
+        console.log(`Row ${i + 1}: Empty row, skipping`);
+        continue;
+      }
 
-      const num = row[0] ? row[0].v : (i + 1);
-      const player = row[1].v;
-      const region = row[2] ? row[2].v : 'NA';
-      const eventsTier = row[3] ? row[3].v : 'N/A';
-      const points = row[4] ? row[4].v : 0;
-      const userId = row[5] ? row[5].v : null; // User ID from column F
+      // Based on your spreadsheet structure:
+      // Column A (index 0) = Player
+      // Column B (index 1) = Region
+      // Column C (index 2) = Points
+      // Column D (index 3) = User ID
+      const player = row[0] && row[0].v ? row[0].v : null;
+      const region = row[1] && row[1].v ? row[1].v : 'NA';
+      const points = row[2] && row[2].v !== null && row[2].v !== undefined ? row[2].v : 0;
+      const userId = row[3] && row[3].v ? String(row[3].v) : null;
 
-      // Determine tier based on points instead of tier string
+      console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Points=${points}, UserId=${userId}`);
+
+      // Skip if no player name
+      if (!player) {
+        console.log(`Row ${i + 1}: No player name, skipping`);
+        continue;
+      }
+
+      // Determine tier based on points
       const tierLevel = getTierFromPoints(points);
+
+      console.log(`${player}: Points=${points}, Tier=${tierLevel}`);
 
       if (tierLevel >= 1 && tierLevel <= 5) {
         // Fetch avatar for each player
@@ -99,12 +129,14 @@ fetch(FULL_SHEET_URL)
           player, 
           region, 
           points, 
-          num, 
+          num: i + 1, // Row number for sorting
           userId, 
           avatarUrl
         });
       }
     }
+
+    console.log('Tier groups:', tierGroups);
 
     // Sort each tier group by points descending, then by num ascending
     for (let t = 1; t <= 5; t++) {
@@ -118,30 +150,33 @@ fetch(FULL_SHEET_URL)
       const pointsColor = getTierPointsColor(t);
       
       html += `
-        <div class="flex-1 min-w-[180px] bg-slate-900/50 rounded-xl overflow-hidden">
-          <h3 class="${headerBg} text-center font-bold text-white py-2 flex justify-center items-center gap-1">
+        <div class="flex-1 min-w-[200px] bg-slate-900/50 rounded-xl overflow-hidden">
+          <h3 class="${headerBg} text-center font-bold text-white py-3 flex justify-center items-center gap-2">
             <span>🏆</span> Tier ${t}
           </h3>
           <ul class="p-4 space-y-3">
       `;
 
       if (tierGroups[t].length === 0) {
-        html += '<li class="text-center text-slate-400 text-sm">No players yet</li>';
+        html += '<li class="text-center text-slate-400 text-sm py-4">No players yet</li>';
       } else {
         tierGroups[t].forEach((p, index) => {
           // Generate avatar HTML with fallback
           const avatarHTML = p.avatarUrl 
-            ? `<img src="${p.avatarUrl}" alt="${p.player} avatar" class="w-8 h-8 rounded" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-               <div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-white font-bold text-xs" style="display:none;">${p.player.charAt(0).toUpperCase()}</div>`
-            : `<div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-white font-bold text-xs">${p.player.charAt(0).toUpperCase()}</div>`;
+            ? `<img src="${p.avatarUrl}" alt="${p.player} avatar" class="w-10 h-10 rounded-lg border-2 border-slate-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+               <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700" style="display:none;">${p.player.charAt(0).toUpperCase()}</div>`
+            : `<div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700">${p.player.charAt(0).toUpperCase()}</div>`;
           
           html += `
-            <li class="flex items-center gap-3 justify-between">
-              <div class="flex items-center gap-3">
+            <li class="bg-slate-800/50 rounded-lg p-3 flex items-center justify-between hover:bg-slate-800/70 transition-colors">
+              <div class="flex items-center gap-3 flex-1 min-w-0">
                 ${avatarHTML}
-                <span class="text-white font-medium">${p.player}</span>
+                <div class="flex flex-col min-w-0">
+                  <span class="text-white font-semibold truncate">${p.player}</span>
+                  <span class="text-slate-400 text-xs">${p.region}</span>
+                </div>
               </div>
-              <span class="${pointsColor} font-semibold">${p.points}</span>
+              <span class="${pointsColor} font-bold text-lg">${p.points}</span>
             </li>
           `;
         });
@@ -151,8 +186,17 @@ fetch(FULL_SHEET_URL)
     }
 
     container.innerHTML = html;
+    console.log('Leaderboard rendered successfully');
   })
   .catch(error => {
     console.error('Error fetching spreadsheet data:', error);
-    // Optionally, display an error message in the UI
+    const container = document.querySelector('.mt-4.space-y-3');
+    if (container) {
+      container.innerHTML = `
+        <div class="bg-red-900/50 rounded-xl px-6 py-4 text-center">
+          <p class="text-red-300 font-medium">Error loading Events leaderboard data</p>
+          <p class="text-red-400 text-sm mt-2">${error.message}</p>
+        </div>
+      `;
+    }
   });
