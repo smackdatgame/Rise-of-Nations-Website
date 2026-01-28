@@ -21,8 +21,8 @@ const FRONTLINE_SHEET_RANGE = "A2:E";
 const SUPPORT_SHEET_TITLE = "Support_Rank";
 const SUPPORT_SHEET_RANGE = "A2:E";
 
-const TEAM_EVENTS_SHEET_TITLE = "Team_Events_Rank";
-const TEAM_EVENTS_SHEET_RANGE = "A2:E";
+const OFFICIAL_EVENTS_SHEET_TITLE = "Official_Events_Rank";
+const OFFICIAL_EVENTS_SHEET_RANGE = "A2:E";
 
 // Construct URLs for fetching data from Google Sheets
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
@@ -31,7 +31,7 @@ const EVENTS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gvi
 const SPEEDRUN_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SPEEDRUN_SHEET_TITLE}&range=${SPEEDRUN_SHEET_RANGE}`;
 const FRONTLINE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${FRONTLINE_SHEET_TITLE}&range=${FRONTLINE_SHEET_RANGE}`;
 const SUPPORT_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SUPPORT_SHEET_TITLE}&range=${SUPPORT_SHEET_RANGE}`;
-const TEAM_EVENTS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${TEAM_EVENTS_SHEET_TITLE}&range=${TEAM_EVENTS_SHEET_RANGE}`;
+const OFFICIAL_EVENTS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${OFFICIAL_EVENTS_SHEET_TITLE}&range=${OFFICIAL_EVENTS_SHEET_RANGE}`;
 
 // Initialize an array to store all player data
 let allPlayers = [];
@@ -120,9 +120,9 @@ Promise.all([
   fetchRankingPoints(SPEEDRUN_SHEET_URL, 'Speedrun_Rank'),
   fetchRankingPoints(FRONTLINE_SHEET_URL, 'Frontline_Rank'),
   fetchRankingPoints(SUPPORT_SHEET_URL, 'Support_Rank'),
-  fetchRankingPoints(TEAM_EVENTS_SHEET_URL, 'Team_Events_Rank')
+  fetchRankingPoints(OFFICIAL_EVENTS_SHEET_URL, 'Official_Events_Rank')
 ])
-  .then(async ([rep, pubsPointsMap, eventsPointsMap, speedrunPointsMap, frontlinePointsMap, supportPointsMap, teamEventsPointsMap]) => {
+  .then(async ([rep, pubsPointsMap, eventsPointsMap, speedrunPointsMap, frontlinePointsMap, supportPointsMap, officialEventsPointsMap]) => {
     // Parse the response to extract JSON data
     const data = JSON.parse(rep.substring(47).slice(0, -2));
     const rows = data.table.rows;
@@ -156,7 +156,7 @@ Promise.all([
       const speedrunPoints = speedrunPointsMap[player] || 0;
       const frontlinePoints = frontlinePointsMap[player] || 0;
       const supportPoints = supportPointsMap[player] || 0;
-      const teamEventsPoints = teamEventsPointsMap[player] || 0;
+      const officialEventsPoints = officialEventsPointsMap[player] || 0;
 
       // Convert points to tier strings
       const pub = pointsToTier(pubPoints);
@@ -164,12 +164,12 @@ Promise.all([
       const speedrun = pointsToTier(speedrunPoints);
       const frontline = pointsToTier(frontlinePoints);
       const support = pointsToTier(supportPoints);
-      const teamEvents = pointsToTier(teamEventsPoints);
+      const officialEvents = pointsToTier(officialEventsPoints);
 
       // Sum up total points
-      const totalPoints = pubPoints + eventPoints + speedrunPoints + frontlinePoints + supportPoints + teamEventsPoints;
+      const totalPoints = pubPoints + eventPoints + speedrunPoints + frontlinePoints + supportPoints + officialEventsPoints;
 
-      console.log(`${player}: pub=${pubPoints}(${pub}), event=${eventPoints}(${event}), speedrun=${speedrunPoints}(${speedrun}), frontline=${frontlinePoints}(${frontline}), support=${supportPoints}(${support}), teamEvents=${teamEventsPoints}(${teamEvents}), total=${totalPoints}`);
+      console.log(`${player}: pub=${pubPoints}(${pub}), event=${eventPoints}(${event}), speedrun=${speedrunPoints}(${speedrun}), frontline=${frontlinePoints}(${frontline}), support=${supportPoints}(${support}), officialEvents=${officialEventsPoints}(${officialEvents}), total=${totalPoints}`);
 
       // Determine title based on total points
       let title = 'Rookie';
@@ -220,7 +220,7 @@ Promise.all([
         speedrun,
         frontline,
         support,
-        teamEvents,
+        officialEvents,
         totalPoints,
         title,
         titleColor,
@@ -233,7 +233,7 @@ Promise.all([
         speedrunPoints,
         frontlinePoints,
         supportPoints,
-        teamEventsPoints
+        officialEventsPoints
       });
     }
 
@@ -319,7 +319,7 @@ function renderPlayers(players) {
       { category: 'speedrun', icon: 'zap', color: 'text-red-500', value: p.speedrun },
       { category: 'frontline', icon: 'shield', color: 'text-blue-500', value: p.frontline },
       { category: 'support', icon: 'dollar-sign', color: 'text-pink-500', value: p.support },
-      { category: 'teamEvents', icon: 'globe', color: 'text-cyan-400', value: p.teamEvents }
+      { category: 'officialEvents', icon: 'globe', color: 'text-cyan-400', value: p.officialEvents }
     ];
 
     // Generate HTML for tiers

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Info Bar Component</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #0a0e1a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <!-- Bottom Info Bar -->
+  <div class="flex justify-end items-center gap-4 my-8 relative">
+    <button id="info-button" class="flex items-center gap-2.5 px-5 py-2.5 bg-slate-800/70 rounded-full border border-slate-700 hover:bg-slate-700/70 transition">
+      <i data-lucide="info" class="w-5 h-5"></i>
+      <span class="font-medium">Information</span>
+    </button>
+
+    <!-- Dropdown Content -->
+    <div id="info-dropdown" class="absolute top-full right-0 mt-2 w-96 bg-[#0f1419] border border-slate-800 rounded-xl shadow-lg hidden z-50 overflow-hidden">
+      <!-- Tab Headers -->
+      <div class="flex border-b border-slate-800">
+        <button id="titles-tab" class="flex-1 px-4 py-3 text-sm font-medium text-slate-400 hover:bg-slate-800/30 transition">Titles</button>
+        <button id="points-tab" class="flex-1 px-4 py-3 text-sm font-medium text-white bg-slate-800/50">Points</button>
+      </div>
+
+      <!-- Tab Content -->
+
+      <!-- Titles -->
+      <div id="titles-content" class="p-6 hidden">
+        <h3 class="text-lg font-bold mb-4 text-white">How to obtain Achievement Titles</h3>
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-start gap-2">
+            <span class="text-yellow-400">♦</span>
+            <div>
+              <span class="font-semibold text-yellow-400">Grandmaster</span><br>
+              <span class="text-slate-300">Obtained 250 total points.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-yellow-400">♦</span>
+            <div>
+              <span class="font-semibold text-yellow-400">Master</span><br>
+              <span class="text-slate-300">Obtained 200 total points.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-pink-500">♦</span>
+            <div>
+              <span class="font-semibold text-pink-500">Ace</span><br>
+              <span class="text-slate-300">Obtained 150 total points.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-purple-500">♦</span>
+            <div>
+              <span class="font-semibold text-purple-500">Specialist</span><br>
+              <span class="text-slate-300">Obtained 100 total points.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-blue-400">♦</span>
+            <div>
+              <span class="font-semibold text-blue-400">Cadet</span><br>
+              <span class="text-slate-300">Obtained 50 total points.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-blue-400">♦</span>
+            <div>
+              <span class="font-semibold text-blue-400">Novice</span><br>
+              <span class="text-slate-300">Obtained 10+ total points.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-gray-400">♦</span>
+            <div>
+              <span class="font-semibold text-gray-400">Rookie</span><br>
+              <span class="text-slate-300">Starting rank for players with less than 10 points.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Points -->
+      <div id="points-content" class="p-6">
+        <h3 class="text-lg font-bold mb-6 text-white">How ranking points are calculated</h3>
+        <ul class="space-y-4 text-sm text-slate-300">
+          <li class="flex items-start gap-3">
+            <span class="text-2xl">🏆</span>
+            <div class="flex-1">
+              <div class="font-semibold text-yellow-500 mb-2">Tier 1</div>
+              <div class="flex gap-2">
+                <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-yellow-400 flex items-center gap-1">
+                  <i data-lucide="arrow-up" class="w-4 h-4"></i> 60 Points
+                </span>
+                <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-yellow-400 flex items-center gap-1">
+                  <i data-lucide="arrow-down" class="w-4 h-4"></i> 45 Points
+                </span>
+              </div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-2xl">🏆</span>
+            <div class="flex-1">
+              <div class="font-semibold text-gray-400 mb-2">Tier 2</div>
+              <div class="flex gap-2">
+                <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                  <i data-lucide="arrow-up" class="w-4 h-4"></i> 30 Points
+                </span>
+                <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                  <i data-lucide="arrow-down" class="w-4 h-4"></i> 20 Points
+                </span>
+              </div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-2xl">🏆</span>
+            <div class="flex-1">
+              <div class="font-semibold text-orange-400 mb-2">Tier 3</div>
+              <div class="flex gap-2">
+                <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-orange-400 flex items-center gap-1">
+                  <i data-lucide="arrow-up" class="w-4 h-4"></i> 10 Points
+                </span>
+                <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-orange-400 flex items-center gap-1">
+                  <i data-lucide="arrow-down" class="w-4 h-4"></i> 6 Points
+                </span>
+              </div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-xl">🏅</span>
+            <div class="flex-1">
+              <div class="font-semibold text-slate-300 mb-2">Tier 4</div>
+              <div class="flex gap-2">
+                <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                  <i data-lucide="arrow-up" class="w-4 h-4"></i> 4 Points
+                </span>
+                <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                  <i data-lucide="arrow-down" class="w-4 h-4"></i> 3 Points
+                </span>
+              </div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-xl">🏅</span>
+            <div class="flex-1">
+              <div class="font-semibold text-slate-300 mb-2">Tier 5</div>
+              <div class="flex gap-2">
+                <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                  <i data-lucide="arrow-up" class="w-4 h-4"></i> 2 Points
+                </span>
+                <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
+                  <i data-lucide="arrow-down" class="w-4 h-4"></i> 1 Point
+                </span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    const infoButton = document.getElementById('info-button');
+    const infoDropdown = document.getElementById('info-dropdown');
+    const titlesTab = document.getElementById('titles-tab');
+    const pointsTab = document.getElementById('points-tab');
+    const titlesContent = document.getElementById('titles-content');
+    const pointsContent = document.getElementById('points-content');
+
+    // Toggle dropdown
+    infoButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      infoDropdown.classList.toggle('hidden');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!infoDropdown.contains(e.target) && !infoButton.contains(e.target)) {
+        infoDropdown.classList.add('hidden');
+      }
+    });
+
+    // Tab switching
+    titlesTab.addEventListener('click', () => {
+      titlesTab.classList.add('bg-slate-800/50', 'text-white');
+      titlesTab.classList.remove('text-slate-400');
+      pointsTab.classList.remove('bg-slate-800/50', 'text-white');
+      pointsTab.classList.add('text-slate-400');
+      
+      titlesContent.classList.remove('hidden');
+      pointsContent.classList.add('hidden');
+    });
+
+    pointsTab.addEventListener('click', () => {
+      pointsTab.classList.add('bg-slate-800/50', 'text-white');
+      pointsTab.classList.remove('text-slate-400');
+      titlesTab.classList.remove('bg-slate-800/50', 'text-white');
+      titlesTab.classList.add('text-slate-400');
+      
+      pointsContent.classList.remove('hidden');
+      titlesContent.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>

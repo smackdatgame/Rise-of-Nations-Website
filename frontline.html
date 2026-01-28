@@ -178,188 +178,16 @@
         <span class="font-medium text-slate-400">Support</span>
       </a>
 
-      <!-- Team Events -->
-      <a href="team_events.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
+      <!-- Official Events -->
+      <a href="official_events.html" class="flex flex-col items-center min-w-fit px-7 py-4 bg-slate-800/40 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors">
         <span class="text-4xl mb-2">🌐</span>
-        <span class="font-medium text-slate-400">Team Events</span>
+        <span class="font-medium text-slate-400">Official Events</span>
       </a>
 
     </div>
 
-    <!-- Bottom Info Bar -->
-    <div class="flex justify-end items-center gap-4 my-8 relative">
-      <button id="info-button" class="flex items-center gap-2.5 px-5 py-2.5 bg-slate-800/70 rounded-full border border-slate-700 hover:bg-slate-700/70 transition">
-        <i data-lucide="info" class="w-5 h-5"></i>
-        <span class="font-medium">Information</span>
-      </button>
-
-      <!-- Dropdown Content -->
-      <div id="info-dropdown" class="absolute top-full right-0 mt-2 w-96 bg-[#0f1419] border border-slate-800 rounded-xl shadow-lg hidden z-50 overflow-hidden">
-        <!-- Tab Headers -->
-        <div class="flex border-b border-slate-800">
-          <button id="titles-tab" class="flex-1 px-4 py-3 text-sm font-medium text-slate-400">Titles</button>
-          <button id="points-tab" class="flex-1 px-4 py-3 text-sm font-medium text-slate-400">Points</button>
-          <button id="tier-test-tab" class="flex-1 px-4 py-3 text-sm font-medium text-white bg-slate-800/50">Tier Test</button>
-        </div>
-
-        <!-- Tab Content -->
-
-        <!-- Titles -->
-        <div id="titles-content" class="p-6 hidden">
-          <h3 class="text-lg font-bold mb-4 text-white">How to obtain Achievement Titles</h3>
-          <ul class="space-y-3 text-sm">
-            <li class="flex items-start gap-2">
-              <span class="text-yellow-400">♦</span>
-              <div>
-                <span class="font-semibold text-yellow-400"> Grandmaster</span><br>
-                Obtained 250 total points.
-              </div>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-yellow-400">♦</span>
-              <div>
-                <span class="font-semibold text-yellow-400"> Master</span><br>
-                Obtained 200 total points.
-              </div>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-pink-500">♦</span>
-              <div>
-                <span class="font-semibold text-pink-500"> Ace</span><br>
-                Obtained 150 total points.
-              </div>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-purple-500">♦</span>
-              <div>
-                <span class="font-semibold text-purple-500">Specialist</span><br>
-                Obtained 100 total points.
-              </div>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-blue-400">♦</span>
-              <div>
-                <span class="font-semibold text-blue-400">Cadet</span><br>
-                Obtained 50 total points.
-              </div>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-blue-400">♦</span>
-              <div>
-                <span class="font-semibold text-blue-400">Novice</span><br>
-                Obtained 10+ total points.
-              </div>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-gray-400">♦</span>
-              <div>
-                <span class="font-semibold text-gray-400">Rookie</span><br>
-                Starting rank for players with less than 10 points.
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Points -->
-        <div id="points-content" class="p-6 hidden">
-          <h3 class="text-lg font-bold mb-6 text-white">How ranking points are calculated</h3>
-          <ul class="space-y-4 text-sm text-slate-300">
-            <li class="flex items-start gap-3">
-              <span class="text-2xl">🏆</span>
-              <div class="flex-1">
-                <div class="font-semibold text-yellow-500 mb-2">Tier 1</div>
-                <div class="flex gap-2">
-                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-yellow-400 flex items-center gap-1">
-                    <i data-lucide="arrow-up" class="w-4 h-4"></i> 60 Points
-                  </span>
-                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-yellow-400 flex items-center gap-1">
-                    <i data-lucide="arrow-down" class="w-4 h-4"></i> 45 Points
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-2xl">🏆</span>
-              <div class="flex-1">
-                <div class="font-semibold text-gray-400 mb-2">Tier 2</div>
-                <div class="flex gap-2">
-                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
-                    <i data-lucide="arrow-up" class="w-4 h-4"></i> 30 Points
-                  </span>
-                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
-                    <i data-lucide="arrow-down" class="w-4 h-4"></i> 20 Points
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-2xl">🏆</span>
-              <div class="flex-1">
-                <div class="font-semibold text-orange-400 mb-2">Tier 3</div>
-                <div class="flex gap-2">
-                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-orange-400 flex items-center gap-1">
-                    <i data-lucide="arrow-up" class="w-4 h-4"></i> 10 Points
-                  </span>
-                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-orange-400 flex items-center gap-1">
-                    <i data-lucide="arrow-down" class="w-4 h-4"></i> 6 Points
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-xl">🏅</span>
-              <div class="flex-1">
-                <div class="font-semibold text-slate-300 mb-2">Tier 4</div>
-                <div class="flex gap-2">
-                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
-                    <i data-lucide="arrow-up" class="w-4 h-4"></i> 4 Points
-                  </span>
-                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
-                    <i data-lucide="arrow-down" class="w-4 h-4"></i> 3 Points
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-xl">🏅</span>
-              <div class="flex-1">
-                <div class="font-semibold text-slate-300 mb-2">Tier 5</div>
-                <div class="flex gap-2">
-                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
-                    <i data-lucide="arrow-up" class="w-4 h-4"></i> 2 Points
-                  </span>
-                  <span class="px-3 py-1.5 bg-slate-800/60 rounded-lg text-slate-300 flex items-center gap-1">
-                    <i data-lucide="arrow-down" class="w-4 h-4"></i> 1 Point
-                  </span>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Tier Test -->
-        <div id="tier-test-content" class="p-6">
-          <h3 class="text-lg font-bold mb-4 text-white">How to get Tier Tested</h3>
-          <div class="text-sm text-slate-300 space-y-4">
-            <p>
-              To get tier tested, join the <a href="https://discord.gg/6abWxpRc" class="text-blue-400 hover:underline">Discord</a>
-               server & visit the <span class="text-slate-400">#request-test</span> 
-              channel in which you will be able to find a message to verify your account.
-            </p>
-            <p>
-              Once you verify your account you are required to fill up a form which, once done, will assign you a waitlist role.
-            </p>
-            <p>
-              Whenever there are tier testers available in your region, you will be able to join.
-            </p>
-            <p>
-              When you reach #1 in the queue, you will gain access to a private channel to schedule with your tier tester.
-            </p>
-            <p class="font-semibold text-white">Happy Testing!</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Info Bar Container - This is where the component will be loaded -->
+    <div id="info-bar-container"></div>
 
     <!-- Leaderboard Header -->
     <div class="bg-slate-900/50 border border-slate-800 rounded-xl px-6 py-4">
@@ -380,82 +208,92 @@
 
   <script src="frontline_leaderboard.js"></script>
 
-  <!-- JavaScript for Toggle, Tabs, and Player Search -->
+  <!-- JavaScript for Loading Info Bar Component and All Interactions -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      const infoButton = document.getElementById('info-button');
-      const infoDropdown = document.getElementById('info-dropdown');
-      const titlesTab = document.getElementById('titles-tab');
-      const pointsTab = document.getElementById('points-tab');
-      const tierTestTab = document.getElementById('tier-test-tab');
-      const titlesContent = document.getElementById('titles-content');
-      const pointsContent = document.getElementById('points-content');
-      const tierTestContent = document.getElementById('tier-test-content');
+      // Load the info bar component
+      fetch('infobar.html')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to load info bar component');
+          }
+          return response.text();
+        })
+        .then(html => {
+          // Insert the HTML into the container
+          document.getElementById('info-bar-container').innerHTML = html;
+          
+          // Re-initialize Lucide icons for the loaded content
+          lucide.createIcons();
+          
+          // Initialize info bar functionality after loading
+          initializeInfoBar();
+        })
+        .catch(error => {
+          console.error('Error loading info bar:', error);
+          // Optionally show a fallback message
+          document.getElementById('info-bar-container').innerHTML = 
+            '<div class="text-slate-400 text-center py-4">Info bar could not be loaded</div>';
+        });
+
+      // Function to initialize info bar interactions
+      function initializeInfoBar() {
+        const infoButton = document.getElementById('info-button');
+        const infoDropdown = document.getElementById('info-dropdown');
+        const titlesTab = document.getElementById('titles-tab');
+        const pointsTab = document.getElementById('points-tab');
+        const titlesContent = document.getElementById('titles-content');
+        const pointsContent = document.getElementById('points-content');
+
+        if (!infoButton || !infoDropdown) {
+          console.error('Info bar elements not found');
+          return;
+        }
+
+        // Toggle dropdown on button click
+        infoButton.addEventListener('click', function(e) {
+          e.stopPropagation();
+          infoDropdown.classList.toggle('hidden');
+          setTimeout(() => lucide.createIcons(), 0);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+          if (!infoButton.contains(event.target) && !infoDropdown.contains(event.target)) {
+            infoDropdown.classList.add('hidden');
+          }
+        });
+
+        // Tab switching
+        if (titlesTab && pointsTab && titlesContent && pointsContent) {
+          titlesTab.addEventListener('click', function() {
+            titlesTab.classList.add('text-white', 'bg-slate-800/50');
+            titlesTab.classList.remove('text-slate-400');
+            pointsTab.classList.add('text-slate-400');
+            pointsTab.classList.remove('text-white', 'bg-slate-800/50');
+            titlesContent.classList.remove('hidden');
+            pointsContent.classList.add('hidden');
+          });
+
+          pointsTab.addEventListener('click', function() {
+            pointsTab.classList.add('text-white', 'bg-slate-800/50');
+            pointsTab.classList.remove('text-slate-400');
+            titlesTab.classList.add('text-slate-400');
+            titlesTab.classList.remove('text-white', 'bg-slate-800/50');
+            pointsContent.classList.remove('hidden');
+            titlesContent.classList.add('hidden');
+            setTimeout(() => lucide.createIcons(), 0);
+          });
+        }
+      }
+
+      // Player search functionality
       const playerSearch = document.getElementById('player-search');
       const searchResults = document.getElementById('search-results');
       const playerModal = document.getElementById('player-modal');
       const closeModal = document.getElementById('close-modal');
 
-      // Toggle dropdown on button click
-      infoButton.addEventListener('click', function() {
-        infoDropdown.classList.toggle('hidden');
-        // Re-initialize icons when dropdown opens
-        setTimeout(() => lucide.createIcons(), 0);
-      });
 
-      // Close dropdown when clicking outside
-      document.addEventListener('click', function(event) {
-        if (!infoButton.contains(event.target) && !infoDropdown.contains(event.target)) {
-          infoDropdown.classList.add('hidden');
-        }
-        if (!playerSearch.contains(event.target) && !searchResults.contains(event.target)) {
-          searchResults.classList.add('hidden');
-        }
-      });
-
-      // Tab switching
-      titlesTab.addEventListener('click', function() {
-        titlesTab.classList.add('text-white', 'bg-slate-800/50');
-        titlesTab.classList.remove('text-slate-400');
-        pointsTab.classList.add('text-slate-400');
-        pointsTab.classList.remove('text-white', 'bg-slate-800/50');
-        tierTestTab.classList.add('text-slate-400');
-        tierTestTab.classList.remove('text-white', 'bg-slate-800/50');
-        
-        titlesContent.classList.remove('hidden');
-        pointsContent.classList.add('hidden');
-        tierTestContent.classList.add('hidden');
-      });
-
-      pointsTab.addEventListener('click', function() {
-        pointsTab.classList.add('text-white', 'bg-slate-800/50');
-        pointsTab.classList.remove('text-slate-400');
-        titlesTab.classList.add('text-slate-400');
-        titlesTab.classList.remove('text-white', 'bg-slate-800/50');
-        tierTestTab.classList.add('text-slate-400');
-        tierTestTab.classList.remove('text-white', 'bg-slate-800/50');
-        
-        pointsContent.classList.remove('hidden');
-        titlesContent.classList.add('hidden');
-        tierTestContent.classList.add('hidden');
-        // Re-initialize icons when switching to points tab
-        setTimeout(() => lucide.createIcons(), 0);
-      });
-
-      tierTestTab.addEventListener('click', function() {
-        tierTestTab.classList.add('text-white', 'bg-slate-800/50');
-        tierTestTab.classList.remove('text-slate-400');
-        titlesTab.classList.add('text-slate-400');
-        titlesTab.classList.remove('text-white', 'bg-slate-800/50');
-        pointsTab.classList.add('text-slate-400');
-        pointsTab.classList.remove('text-white', 'bg-slate-800/50');
-        
-        tierTestContent.classList.remove('hidden');
-        titlesContent.classList.add('hidden');
-        pointsContent.classList.add('hidden');
-      });
-
-      // Player search functionality
       playerSearch.addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase().trim();
         
@@ -481,7 +319,7 @@
                   ${avatarHTML}
                   <div class="flex-1">
                     <div class="font-semibold text-white">${p.player}</div>
-                    <div class="text-xs text-slate-400">#${p.num} • ${p.totalPoints} points</div>
+                    <div class="text-xs text-slate-400">#${p.num} • ${p.frontlinePoints || 0} points</div>
                   </div>
                   <span class="px-2 py-1 rounded text-xs ${p.regionBg} ${p.regionText}">${p.region}</span>
                 </div>
@@ -494,7 +332,7 @@
               item.addEventListener('click', function() {
                 const playerName = this.getAttribute('data-player');
                 const player = allPlayers.find(p => p.player === playerName);
-                if (player) {
+                if (player && typeof showPlayerModal === 'function') {
                   showPlayerModal(player);
                   searchResults.classList.add('hidden');
                   playerSearch.value = '';
@@ -505,6 +343,13 @@
             searchResults.innerHTML = '<div class="px-4 py-3 text-center text-slate-400">No players found</div>';
             searchResults.classList.remove('hidden');
           }
+        }
+      });
+
+      // Close search results when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!playerSearch.contains(event.target) && !searchResults.contains(event.target)) {
+          searchResults.classList.add('hidden');
         }
       });
 
@@ -552,7 +397,7 @@
           { icon: 'target', color: 'text-red-500', bg: 'bg-red-900', value: player.speedrun, points: player.speedrunPoints, label: 'Speedrun' },
           { icon: 'shield', color: 'text-blue-500', bg: 'bg-blue-900', value: player.frontline, points: player.frontlinePoints, label: 'Frontline' },
           { icon: 'dollar-sign', color: 'text-pink-500', bg: 'bg-pink-900', value: player.support, points: player.supportPoints, label: 'Support' },
-          { icon: 'users', color: 'text-cyan-400', bg: 'bg-cyan-900', value: player.teamEvents, points: player.teamEventsPoints, label: 'Team Events' }
+          { icon: 'users', color: 'text-cyan-400', bg: 'bg-cyan-900', value: player.officialEvents, points: player.officialEventsPoints, label: 'Official Events' }
         ];
 
         const getTierBorderColor = (tier) => {
