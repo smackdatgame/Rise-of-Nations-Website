@@ -51,7 +51,6 @@ function pointsToTier(points) {
   else if (points >= 1) return 'LT5';
   return 'N/A';
 }
-
 // Function to get Roblox avatar headshot using a CORS proxy
 async function getRobloxAvatar(userId) {
   if (!userId) {
@@ -78,8 +77,6 @@ async function getRobloxAvatar(userId) {
     return null;
   }
 }
-
-// Generic function to fetch points from any ranking sheet
 async function fetchRankingPoints(sheetUrl, sheetName) {
   try {
     const response = await fetch(sheetUrl);
@@ -206,9 +203,8 @@ Promise.all([
         regionText = 'text-orange-300';
       }
 
-      // Get Roblox avatar
-      const avatarUrl = await getRobloxAvatar(userId);
-      console.log(`Avatar URL for ${player}:`, avatarUrl);
+      // Store userId for parallel avatar fetching later
+      const avatarUrl = null;
 
       // Store player data
       allPlayers.push({
@@ -249,8 +245,27 @@ Promise.all([
 
     console.log('Players sorted and ranked:', allPlayers);
 
-    // Render all players initially
+    // Render all players with fallback avatars (initials) first
     renderPlayers(allPlayers);
+
+    // Fetch all avatars in parallel
+    const avatarPromises = allPlayers.map(player => 
+      player.userId ? getRobloxAvatar(player.userId) : Promise.resolve(null)
+    );
+    
+    Promise.all(avatarPromises).then(avatarUrls => {
+      // Update player avatars with fetched URLs
+      allPlayers.forEach((player, index) => {
+        player.avatarUrl = avatarUrls[index];
+      });
+      
+      console.log('All avatars fetched:', allPlayers);
+      
+      // Re-render players with actual avatars
+      renderPlayers(allPlayers);
+    }).catch(error => {
+      console.error('Error fetching avatars in parallel:', error);
+    });
 
     // Add event listener for search input
     const searchInput = document.querySelector('input[placeholder="Search player..."]');
@@ -336,7 +351,7 @@ function renderPlayers(players) {
       `;
     });
 
-    // Generate avatar HTML with fallback
+    // Generate avatar HTML with fallback to initials
     const avatarHTML = p.avatarUrl 
       ? `<img src="${p.avatarUrl}" alt="${p.player} avatar" class="w-12 h-12 rounded-full border-2 border-slate-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
          <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700" style="display:none;">${p.player.charAt(0).toUpperCase()}</div>`
