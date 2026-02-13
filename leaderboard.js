@@ -253,24 +253,37 @@ function renderPlayers(players) {
   players.forEach(p => {
     // Define tier icons and their properties
     const tierIcons = [
-      { category: 'pub', icon: 'swords', color: 'text-green-400', value: p.pub },
-      { category: 'event', icon: 'user', color: 'text-purple-400', value: p.event },
-      { category: 'speedrun', icon: 'zap', color: 'text-red-500', value: p.speedrun },
-      { category: 'frontline', icon: 'shield', color: 'text-blue-500', value: p.frontline },
-      { category: 'support', icon: 'dollar-sign', color: 'text-pink-500', value: p.support },
-      { category: 'officialEvents', icon: 'globe', color: 'text-cyan-400', value: p.officialEvents }
+      { category: 'pub', icon: 'swords', color: 'text-green-400', value: p.pub, points: p.pubPoints },
+      { category: 'event', icon: 'user', color: 'text-purple-400', value: p.event, points: p.eventPoints },
+      { category: 'speedrun', icon: 'zap', color: 'text-red-500', value: p.speedrun, points: p.speedrunPoints },
+      { category: 'frontline', icon: 'shield', color: 'text-blue-500', value: p.frontline, points: p.frontlinePoints },
+      { category: 'support', icon: 'dollar-sign', color: 'text-pink-500', value: p.support, points: p.supportPoints },
+      { category: 'officialEvents', icon: 'globe', color: 'text-cyan-400', value: p.officialEvents, points: p.officialEventsPoints }
     ];
 
-    // Generate HTML for tiers
+    // Generate HTML for tiers with tooltip
     let tiersHTML = '';
-    tierIcons.forEach(tier => {
+    tierIcons.forEach((tier, index) => {
       const borderColor = getTierBorderColor(tier.value);
+      const tooltipId = `tooltip-${p.player.replace(/\s+/g, '-')}-${index}`;
       tiersHTML += `
-        <div class="flex flex-col items-center gap-1">
-          <div class="w-10 h-10 flex items-center justify-center rounded-full border-2 ${borderColor} bg-slate-900/80">
-            <i data-lucide="${tier.icon}" class="w-5 h-5 ${tier.color}"></i>
+        <div class="tier-icon-wrapper relative group" data-tooltip-id="${tooltipId}">
+          <div class="flex flex-col items-center gap-1">
+            <div class="w-10 h-10 flex items-center justify-center rounded-full border-2 ${borderColor} bg-slate-900/80 cursor-help">
+              <i data-lucide="${tier.icon}" class="w-5 h-5 ${tier.color}"></i>
+            </div>
+            <span class="text-xs font-medium text-slate-400">${tier.value}</span>
           </div>
-          <span class="text-xs font-medium text-slate-400">${tier.value}</span>
+          <!-- Tooltip popup that appears at bottom on hover -->
+          <div class="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 z-50">
+            <!-- Arrow pointing up -->
+            <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-6 border-r-6 border-b-6 border-l-transparent border-r-transparent border-b-slate-800"></div>
+            <!-- Bubble tooltip -->
+            <div class="bg-slate-800 border border-slate-600 rounded-full px-6 py-4 min-w-max shadow-lg">
+              <div class="text-lg font-bold text-white text-center">${tier.value}</div>
+              <div class="text-sm text-slate-300 text-center">${tier.points} points</div>
+            </div>
+          </div>
         </div>
       `;
     });
