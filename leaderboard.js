@@ -3,35 +3,10 @@
 // Define constants for Google Sheets API access
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
 const SHEET_TITLE = "Overall_Rank";
-const SHEET_RANGE = "A2:D"; // Start from A2 to skip header, include columns A-D
+const SHEET_RANGE = "A2:H"; // Columns A-H: A=Player, B=Region, C=Pubs, D=Events, E=Speedrun, F=Frontline, G=Support, H=Official_Events
 
-// Define all ranking sheets with proper ranges
-const PUBS_SHEET_TITLE = "Pubs_Rank";
-const PUBS_SHEET_RANGE = "A2:E"; // Include Points column (E)
-
-const EVENTS_SHEET_TITLE = "Events_Rank";
-const EVENTS_SHEET_RANGE = "A2:E";
-
-const SPEEDRUN_SHEET_TITLE = "Speedrun_Rank";
-const SPEEDRUN_SHEET_RANGE = "A2:E";
-
-const FRONTLINE_SHEET_TITLE = "Frontline_Rank";
-const FRONTLINE_SHEET_RANGE = "A2:E";
-
-const SUPPORT_SHEET_TITLE = "Support_Rank";
-const SUPPORT_SHEET_RANGE = "A2:E";
-
-const OFFICIAL_EVENTS_SHEET_TITLE = "Official_Events_Rank";
-const OFFICIAL_EVENTS_SHEET_RANGE = "A2:E";
-
-// Construct URLs for fetching data from Google Sheets
+// Construct URL for fetching data from Google Sheets
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
-const PUBS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${PUBS_SHEET_TITLE}&range=${PUBS_SHEET_RANGE}`;
-const EVENTS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${EVENTS_SHEET_TITLE}&range=${EVENTS_SHEET_RANGE}`;
-const SPEEDRUN_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SPEEDRUN_SHEET_TITLE}&range=${SPEEDRUN_SHEET_RANGE}`;
-const FRONTLINE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${FRONTLINE_SHEET_TITLE}&range=${FRONTLINE_SHEET_RANGE}`;
-const SUPPORT_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SUPPORT_SHEET_TITLE}&range=${SUPPORT_SHEET_RANGE}`;
-const OFFICIAL_EVENTS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${OFFICIAL_EVENTS_SHEET_TITLE}&range=${OFFICIAL_EVENTS_SHEET_RANGE}`;
 
 // Initialize an array to store all player data
 let allPlayers = [];
@@ -51,75 +26,11 @@ function pointsToTier(points) {
   else if (points >= 1) return 'LT5';
   return 'N/A';
 }
-// Function to get Roblox avatar headshot using a CORS proxy
-async function getRobloxAvatar(userId) {
-  if (!userId) {
-    console.log('No userId provided');
-    return null;
-  }
-  
-  console.log(`Fetching avatar for userId: ${userId}`);
-  
-  try {
-    const proxyUrl = 'https://corsproxy.io/?';
-    const apiUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
-    
-    const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
-    const data = await response.json();
-    console.log(`Avatar response for ${userId}:`, data);
-    
-    if (data.data && data.data.length > 0 && data.data[0].state === 'Completed') {
-      return data.data[0].imageUrl;
-    }
-    return null;
-  } catch (error) {
-    console.error(`Error fetching avatar for user ${userId}:`, error);
-    return null;
-  }
-}
-async function fetchRankingPoints(sheetUrl, sheetName) {
-  try {
-    const response = await fetch(sheetUrl);
-    const text = await response.text();
-    const data = JSON.parse(text.substring(47).slice(0, -2));
-    const rows = data.table.rows;
-    
-    // Create a map of player name to points
-    const pointsMap = {};
-    
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i] ? rows[i].c : null;
-      if (!row) continue;
-      
-      // Column A (index 0) = Player name
-      // Column C (index 2) = Points
-      const player = row[0] && row[0].v ? row[0].v : null;
-      const points = row[2] && row[2].v !== null ? row[2].v : 0;
-      
-      if (player) {
-        pointsMap[player] = points;
-      }
-    }
-    
-    console.log(`${sheetName} points map:`, pointsMap);
-    return pointsMap;
-  } catch (error) {
-    console.error(`Error fetching ${sheetName} data:`, error);
-    return {};
-  }
-}
 
-// Fetch data from all sheets
-Promise.all([
-  fetch(FULL_SHEET_URL).then(res => res.text()),
-  fetchRankingPoints(PUBS_SHEET_URL, 'Pubs_Rank'),
-  fetchRankingPoints(EVENTS_SHEET_URL, 'Events_Rank'),
-  fetchRankingPoints(SPEEDRUN_SHEET_URL, 'Speedrun_Rank'),
-  fetchRankingPoints(FRONTLINE_SHEET_URL, 'Frontline_Rank'),
-  fetchRankingPoints(SUPPORT_SHEET_URL, 'Support_Rank'),
-  fetchRankingPoints(OFFICIAL_EVENTS_SHEET_URL, 'Official_Events_Rank')
-])
-  .then(async ([rep, pubsPointsMap, eventsPointsMap, speedrunPointsMap, frontlinePointsMap, supportPointsMap, officialEventsPointsMap]) => {
+// Fetch data from Overall_Rank sheet
+fetch(FULL_SHEET_URL)
+  .then(res => res.text())
+  .then(async (rep) => {
     // Parse the response to extract JSON data
     const data = JSON.parse(rep.substring(47).slice(0, -2));
     const rows = data.table.rows;
@@ -131,15 +42,26 @@ Promise.all([
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i].c || [];
 
-      // Based on your spreadsheet:
+      // Based on Overall_Rank spreadsheet:
       // Column A (index 0) = Player
       // Column B (index 1) = Region
-      // Column C (index 2) = User ID (not column I/index 8)
+      // Column C (index 2) = Pubs rank points
+      // Column D (index 3) = Events rank points
+      // Column E (index 4) = Speedrun rank points
+      // Column F (index 5) = Frontline rank points
+      // Column G (index 6) = Support rank points
+      // Column H (index 7) = Official Events rank points
       const player = row[0] && row[0].v ? row[0].v : null;
       const region = row[1] && row[1].v ? row[1].v : 'NA';
-      const userId = row[2] && row[2].v ? String(row[2].v) : null;
+      const pubPoints = row[2] && row[2].v !== null && row[2].v !== undefined ? row[2].v : 0;
+      const eventPoints = row[3] && row[3].v !== null && row[3].v !== undefined ? row[3].v : 0;
+      const speedrunPoints = row[4] && row[4].v !== null && row[4].v !== undefined ? row[4].v : 0;
+      const frontlinePoints = row[5] && row[5].v !== null && row[5].v !== undefined ? row[5].v : 0;
+      const supportPoints = row[6] && row[6].v !== null && row[6].v !== undefined ? row[6].v : 0;
+      const officialEventsPoints = row[7] && row[7].v !== null && row[7].v !== undefined ? row[7].v : 0;
+      const userId = null;
 
-      console.log(`Row ${i + 1}: Player=${player}, Region=${region}, UserId=${userId}`);
+      console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Pub=${pubPoints}, Event=${eventPoints}, Speedrun=${speedrunPoints}, Frontline=${frontlinePoints}, Support=${supportPoints}, OfficialEvents=${officialEventsPoints}`);
 
       // Skip invalid rows
       if (!player) {
@@ -147,13 +69,7 @@ Promise.all([
         continue;
       }
 
-      // Get points from respective ranking sheets
-      const pubPoints = pubsPointsMap[player] || 0;
-      const eventPoints = eventsPointsMap[player] || 0;
-      const speedrunPoints = speedrunPointsMap[player] || 0;
-      const frontlinePoints = frontlinePointsMap[player] || 0;
-      const supportPoints = supportPointsMap[player] || 0;
-      const officialEventsPoints = officialEventsPointsMap[player] || 0;
+      // Points are already extracted from the Overall_Rank sheet columns above
 
       // Convert points to tier strings
       const pub = pointsToTier(pubPoints);
@@ -248,24 +164,32 @@ Promise.all([
     // Render all players with fallback avatars (initials) first
     renderPlayers(allPlayers);
 
-    // Fetch all avatars in parallel
-    const avatarPromises = allPlayers.map(player => 
-      player.userId ? getRobloxAvatar(player.userId) : Promise.resolve(null)
-    );
+    // Fetch avatars with a delay to avoid rate limiting
+    const fetchAvatarsWithDelay = async () => {
+      for (let i = 0; i < allPlayers.length; i++) {
+        const player = allPlayers[i];
+        if (player.userId) {
+          try {
+            const avatarUrl = await getRobloxAvatar(player.userId);
+            player.avatarUrl = avatarUrl;
+            
+            // Update just this player's avatar in the DOM
+            renderPlayers(allPlayers);
+            
+            // Small delay between requests to avoid rate limiting
+            if (i < allPlayers.length - 1) {
+              await new Promise(resolve => setTimeout(resolve, 200));
+            }
+          } catch (error) {
+            console.error(`Error fetching avatar for ${player.player}:`, error);
+          }
+        }
+      }
+      console.log('All avatars fetched');
+    };
     
-    Promise.all(avatarPromises).then(avatarUrls => {
-      // Update player avatars with fetched URLs
-      allPlayers.forEach((player, index) => {
-        player.avatarUrl = avatarUrls[index];
-      });
-      
-      console.log('All avatars fetched:', allPlayers);
-      
-      // Re-render players with actual avatars
-      renderPlayers(allPlayers);
-    }).catch(error => {
-      console.error('Error fetching avatars in parallel:', error);
-    });
+    // Start fetching avatars
+    fetchAvatarsWithDelay();
 
     // Add event listener for search input
     const searchInput = document.querySelector('input[placeholder="Search player..."]');
@@ -353,7 +277,7 @@ function renderPlayers(players) {
 
     // Generate avatar HTML with fallback to initials
     const avatarHTML = p.avatarUrl 
-      ? `<img src="${p.avatarUrl}" alt="${p.player} avatar" class="w-12 h-12 rounded-full border-2 border-slate-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      ? `<img src="${p.avatarUrl}" alt="${p.player} avatar" class="w-12 h-12 rounded-full border-2 border-slate-700" crossorigin="anonymous" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
          <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700" style="display:none;">${p.player.charAt(0).toUpperCase()}</div>`
       : `<div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700">${p.player.charAt(0).toUpperCase()}</div>`;
 

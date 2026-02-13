@@ -1,37 +1,10 @@
 // speedrun_leaderboard.js
 
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
-const SHEET_TITLE = "Speedrun_Rank";
-const SHEET_RANGE = "A2:D"; // Columns A-D starting from row 2 to skip header
+const SHEET_TITLE = "Overall_Rank";
+const SHEET_RANGE = "A2:E"; // Columns A-E starting from row 2 to skip header
 
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
-
-// Function to get Roblox avatar headshot using a CORS proxy
-async function getRobloxAvatar(userId) {
-  if (!userId) {
-    console.log('No userId provided');
-    return null;
-  }
-  
-  console.log(`Fetching avatar for userId: ${userId}`);
-  
-  try {
-    const proxyUrl = 'https://corsproxy.io/?';
-    const apiUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
-    
-    const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
-    const data = await response.json();
-    console.log(`Avatar response for ${userId}:`, data);
-    
-    if (data.data && data.data.length > 0 && data.data[0].state === 'Completed') {
-      return data.data[0].imageUrl;
-    }
-    return null;
-  } catch (error) {
-    console.error(`Error fetching avatar for user ${userId}:`, error);
-    return null;
-  }
-}
 
 // Function to determine tier based on points
 function getTierFromPoints(points) {
@@ -101,14 +74,14 @@ fetch(FULL_SHEET_URL)
       // Based on your spreadsheet structure:
       // Column A (index 0) = Player
       // Column B (index 1) = Region
-      // Column C (index 2) = Points
-      // Column D (index 3) = User ID
+      // Column C (index 2) = unused
+      // Column D (index 3) = unused
+      // Column E (index 4) = Points
       const player = row[0] && row[0].v ? row[0].v : null;
       const region = row[1] && row[1].v ? row[1].v : 'NA';
-      const points = row[2] && row[2].v !== null && row[2].v !== undefined ? row[2].v : 0;
-      const userId = row[3] && row[3].v ? String(row[3].v) : null;
+      const points = row[4] && row[4].v !== null && row[4].v !== undefined ? row[4].v : 0;
 
-      console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Points=${points}, UserId=${userId}`);
+      console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Points=${points}`);
 
       // Skip if no player name
       if (!player) {
@@ -122,16 +95,11 @@ fetch(FULL_SHEET_URL)
       console.log(`${player}: Points=${points}, Tier=${tierLevel}`);
 
       if (tierLevel >= 1 && tierLevel <= 5) {
-        // Fetch avatar for each player
-        const avatarUrl = await getRobloxAvatar(userId);
-        
         tierGroups[tierLevel].push({
           player, 
           region, 
           points, 
-          num: i + 1, // Row number for sorting
-          userId, 
-          avatarUrl
+          num: i + 1 // Row number for sorting
         });
       }
     }
@@ -161,16 +129,10 @@ fetch(FULL_SHEET_URL)
         html += '<li class="text-center text-slate-400 text-sm py-4">No players yet</li>';
       } else {
         tierGroups[t].forEach((p, index) => {
-          // Generate avatar HTML with fallback
-          const avatarHTML = p.avatarUrl 
-            ? `<img src="${p.avatarUrl}" alt="${p.player} avatar" class="w-10 h-10 rounded-lg border-2 border-slate-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-               <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700" style="display:none;">${p.player.charAt(0).toUpperCase()}</div>`
-            : `<div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700">${p.player.charAt(0).toUpperCase()}</div>`;
-          
           html += `
             <li class="bg-slate-800/50 rounded-lg p-3 flex items-center justify-between hover:bg-slate-800/70 transition-colors">
               <div class="flex items-center gap-3 flex-1 min-w-0">
-                ${avatarHTML}
+                <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700">${p.player.charAt(0).toUpperCase()}</div>
                 <div class="flex flex-col min-w-0">
                   <span class="text-white font-semibold truncate">${p.player}</span>
                   <span class="text-slate-400 text-xs">${p.region}</span>

@@ -1,8 +1,8 @@
 // pubs_leaderboard.js
 
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
-const SHEET_TITLE = "Pubs_Rank";
-const SHEET_RANGE = "A2:D"; // Columns A-D starting from row 2 to skip header
+const SHEET_TITLE = "Overall_Rank";
+const SHEET_RANGE = "A2:C"; // Columns A-C starting from row 2 to skip header
 
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
 
@@ -102,13 +102,12 @@ fetch(FULL_SHEET_URL)
       // Column A (index 0) = Player
       // Column B (index 1) = Region
       // Column C (index 2) = Points
-      // Column D (index 3) = User ID
       const player = row[0] && row[0].v ? row[0].v : null;
       const region = row[1] && row[1].v ? row[1].v : 'NA';
       const points = row[2] && row[2].v !== null && row[2].v !== undefined ? row[2].v : 0;
-      const userId = row[3] && row[3].v ? String(row[3].v) : null;
+      const userId = null;
 
-      console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Points=${points}, UserId=${userId}`);
+      console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Points=${points}`);
 
       // Skip if no player name
       if (!player) {
