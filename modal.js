@@ -40,8 +40,25 @@
     
     modalTitle.className = `px-4 py-2 bg-gradient-to-r ${titleBg} rounded-full text-white font-semibold flex items-center gap-2`;
 
-    // Set region
-    document.getElementById('modal-region').textContent = player.region;
+    // Assign colors for region badge
+    let regionBg = 'bg-red-900/50';
+    let regionText = 'text-red-300';
+    if (player.region === 'EU') {
+      regionBg = 'bg-green-900/50';
+      regionText = 'text-green-300';
+    } else if (player.region === 'ASIA') {
+      regionBg = 'bg-blue-900/50';
+      regionText = 'text-blue-300';
+    } else if (player.region === 'OC') {
+      regionBg = 'bg-purple-900/50';
+      regionText = 'text-purple-300';
+    } else if (player.region === 'AFRICA' || player.region === 'AF') {
+      regionBg = 'bg-orange-900/50';
+      regionText = 'text-orange-300';
+    }
+
+    // Set region with badge styling
+    document.getElementById('modal-region').innerHTML = `<span class="px-3 py-1.5 rounded-full text-sm font-medium ${regionBg} ${regionText}">${player.region}</span>`;
 
     // Set rank and points
     document.getElementById('modal-rank').textContent = `#${player.num}.`;
@@ -74,15 +91,44 @@
       }
     };
 
+    // Function to get tier text color (matches border color)
+    const getTierTextColor = (tier) => {
+      switch(tier) {
+        case 'HT1': return 'text-yellow-200';
+        case 'LT1': return 'text-yellow-500';
+        case 'HT2': return 'text-gray-200';
+        case 'LT2': return 'text-gray-400';
+        case 'HT3': return 'text-orange-500';
+        case 'LT3': return 'text-orange-800';
+        case 'HT4': return 'text-gray-600';
+        case 'LT4': return 'text-gray-600';
+        case 'HT5': return 'text-gray-800';
+        case 'LT5': return 'text-gray-800';
+        default: return 'text-slate-700';
+      }
+    };
+
     modalTiers.innerHTML = tierIcons.map(tier => {
-      const borderColor = getTierBorderColor(tier.value);
+      // Check if this specific tier is retired
+      let isRetired = false;
+      if (tier.label === 'Pubs') isRetired = player.pubRetired;
+      else if (tier.label === 'Events') isRetired = player.eventRetired;
+      else if (tier.label === 'Speedrun') isRetired = player.speedrunRetired;
+      else if (tier.label === 'Frontline') isRetired = player.frontlineRetired;
+      else if (tier.label === 'Support') isRetired = player.supportRetired;
+      else if (tier.label === 'Official Events') isRetired = player.officialEventsRetired;
+      
+      const borderColor = isRetired ? 'border-transparent' : getTierBorderColor(tier.value);
+      const textColor = getTierTextColor(tier.value);
+      const retiredLabel = isRetired ? '<span class="text-xs text-slate-400 font-medium block">Retired</span>' : '';
       return `
         <div class="flex flex-col items-center gap-1">
           <div class="w-12 h-12 flex items-center justify-center rounded-full border-2 ${borderColor} ${tier.bg}/40 relative shadow-md">
             <i data-lucide="${tier.icon}" class="w-6 h-6 ${tier.color}"></i>
           </div>
-          <span class="text-xs font-bold text-white">${tier.value}</span>
+          <span class="text-xs font-bold ${textColor}">${tier.value}</span>
           <span class="text-xs text-slate-400">${tier.points || 0}pts</span>
+          ${retiredLabel}
         </div>
       `;
     }).join('');

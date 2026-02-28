@@ -2,7 +2,7 @@
 
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
 const SHEET_TITLE = "Overall_Rank";
-const SHEET_RANGE = "A2:E"; // Columns A-E starting from row 2 to skip header
+const SHEET_RANGE = "A2:K"; // Columns A-K, where K (index 10) is Speedrun retirement
 
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
 
@@ -71,15 +71,15 @@ fetch(FULL_SHEET_URL)
         continue;
       }
 
-      // Based on your spreadsheet structure:
+      // Based on your spreadsheet structure (Overall_Rank sheet):
       // Column A (index 0) = Player
       // Column B (index 1) = Region
-      // Column C (index 2) = unused
-      // Column D (index 3) = unused
-      // Column E (index 4) = Points
+      // Column E (index 4) = Speedrun Points
+      // Column K (index 10) = Speedrun Retired
       const player = row[0] && row[0].v ? row[0].v : null;
       const region = row[1] && row[1].v ? row[1].v : 'NA';
       const points = row[4] && row[4].v !== null && row[4].v !== undefined ? row[4].v : 0;
+      const isRetired = row[10] && (row[10].v === true || row[10].v === 'TRUE' || row[10].v === 1) ? true : false;
 
       console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Points=${points}`);
 
@@ -99,7 +99,8 @@ fetch(FULL_SHEET_URL)
           player, 
           region, 
           points, 
-          num: i + 1 // Row number for sorting
+          num: i + 1, // Row number for sorting
+          isRetired
         });
       }
     }
@@ -129,13 +130,16 @@ fetch(FULL_SHEET_URL)
         html += '<li class="text-center text-slate-400 text-sm py-4">No players yet</li>';
       } else {
         tierGroups[t].forEach((p, index) => {
+          const borderClass = p.isRetired ? 'border-transparent' : 'border-2 border-slate-700';
+          const retiredLabel = p.isRetired ? '<span class="text-slate-400 text-xs">Retired</span>' : '';
           html += `
             <li class="bg-slate-800/50 rounded-lg p-3 flex items-center justify-between hover:bg-slate-800/70 transition-colors">
               <div class="flex items-center gap-3 flex-1 min-w-0">
-                <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700">${p.player.charAt(0).toUpperCase()}</div>
+                <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold ${borderClass}">${p.player.charAt(0).toUpperCase()}</div>
                 <div class="flex flex-col min-w-0">
                   <span class="text-white font-semibold truncate">${p.player}</span>
                   <span class="text-slate-400 text-xs">${p.region}</span>
+                  ${retiredLabel}
                 </div>
               </div>
               <span class="${pointsColor} font-bold text-lg">${p.points}</span>

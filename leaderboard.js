@@ -3,7 +3,7 @@
 // Define constants for Google Sheets API access
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
 const SHEET_TITLE = "Overall_Rank";
-const SHEET_RANGE = "A2:H"; // Columns A-H: A=Player, B=Region, C=Pubs, D=Events, E=Speedrun, F=Frontline, G=Support, H=Official_Events
+const SHEET_RANGE = "A2:N"; // Columns A-N: A=Player, B=Region, C=Pubs, D=Events, E=Speedrun, F=Frontline, G=Support, H=Official_Events, I-N=Retired flags for each category
 
 // Construct URL for fetching data from Google Sheets
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
@@ -51,6 +51,12 @@ fetch(FULL_SHEET_URL)
       // Column F (index 5) = Frontline rank points
       // Column G (index 6) = Support rank points
       // Column H (index 7) = Official Events rank points
+      // Column I (index 8) = Pubs Retired
+      // Column J (index 9) = Events Retired
+      // Column K (index 10) = Speedrun Retired
+      // Column L (index 11) = Frontline Retired
+      // Column M (index 12) = Support Retired
+      // Column N (index 13) = Official Events Retired
       const player = row[0] && row[0].v ? row[0].v : null;
       const region = row[1] && row[1].v ? row[1].v : 'NA';
       const pubPoints = row[2] && row[2].v !== null && row[2].v !== undefined ? row[2].v : 0;
@@ -59,6 +65,12 @@ fetch(FULL_SHEET_URL)
       const frontlinePoints = row[5] && row[5].v !== null && row[5].v !== undefined ? row[5].v : 0;
       const supportPoints = row[6] && row[6].v !== null && row[6].v !== undefined ? row[6].v : 0;
       const officialEventsPoints = row[7] && row[7].v !== null && row[7].v !== undefined ? row[7].v : 0;
+      const pubRetired = row[8] && (row[8].v === true || row[8].v === 'TRUE' || row[8].v === 1) ? true : false;
+      const eventRetired = row[9] && (row[9].v === true || row[9].v === 'TRUE' || row[9].v === 1) ? true : false;
+      const speedrunRetired = row[10] && (row[10].v === true || row[10].v === 'TRUE' || row[10].v === 1) ? true : false;
+      const frontlineRetired = row[11] && (row[11].v === true || row[11].v === 'TRUE' || row[11].v === 1) ? true : false;
+      const supportRetired = row[12] && (row[12].v === true || row[12].v === 'TRUE' || row[12].v === 1) ? true : false;
+      const officialEventsRetired = row[13] && (row[13].v === true || row[13].v === 'TRUE' || row[13].v === 1) ? true : false;
       const userId = null;
 
       console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Pub=${pubPoints}, Event=${eventPoints}, Speedrun=${speedrunPoints}, Frontline=${frontlinePoints}, Support=${supportPoints}, OfficialEvents=${officialEventsPoints}`);
@@ -145,7 +157,13 @@ fetch(FULL_SHEET_URL)
         speedrunPoints,
         frontlinePoints,
         supportPoints,
-        officialEventsPoints
+        officialEventsPoints,
+        pubRetired,
+        eventRetired,
+        speedrunRetired,
+        frontlineRetired,
+        supportRetired,
+        officialEventsRetired
       });
     }
 
@@ -243,9 +261,26 @@ function renderPlayers(players) {
       case 'LT3': return 'border-orange-800';
       case 'HT4': return 'border-gray-600';
       case 'LT4': return 'border-gray-600';
-      case 'HT5': return 'border-gray-800';
-      case 'LT5': return 'border-gray-800';
+      case 'HT5': return 'border-gray-700';
+      case 'LT5': return 'border-gray-700';
       default: return 'border-slate-700';
+    }
+  };
+
+  // Function to get tier text color (matches border color)
+  const getTierTextColor = (tier) => {
+    switch(tier) {
+      case 'HT1': return 'text-yellow-200';
+      case 'LT1': return 'text-yellow-500';
+      case 'HT2': return 'text-gray-200';
+      case 'LT2': return 'text-gray-400';
+      case 'HT3': return 'text-orange-500';
+      case 'LT3': return 'text-orange-800';
+      case 'HT4': return 'text-gray-600';
+      case 'LT4': return 'text-gray-600';
+      case 'HT5': return 'text-gray-700';
+      case 'LT5': return 'text-gray-700';
+      default: return 'text-slate-700';
     }
   };
 
@@ -264,15 +299,26 @@ function renderPlayers(players) {
     // Generate HTML for tiers with tooltip
     let tiersHTML = '';
     tierIcons.forEach((tier, index) => {
-      const borderColor = getTierBorderColor(tier.value);
+      // Check if this specific tier is retired
+      let isRetired = false;
+      if (tier.category === 'pub') isRetired = p.pubRetired;
+      else if (tier.category === 'event') isRetired = p.eventRetired;
+      else if (tier.category === 'speedrun') isRetired = p.speedrunRetired;
+      else if (tier.category === 'frontline') isRetired = p.frontlineRetired;
+      else if (tier.category === 'support') isRetired = p.supportRetired;
+      else if (tier.category === 'officialEvents') isRetired = p.officialEventsRetired;
+      
+      const borderColor = isRetired ? 'border-transparent' : getTierBorderColor(tier.value);
+      const textColor = getTierTextColor(tier.value);
       const tooltipId = `tooltip-${p.player.replace(/\s+/g, '-')}-${index}`;
+      const retiredLabel = isRetired ? '<div class="text-xs text-slate-400 font-medium">Retired</div>' : '';
       tiersHTML += `
         <div class="tier-icon-wrapper relative group" data-tooltip-id="${tooltipId}">
           <div class="flex flex-col items-center gap-1">
             <div class="w-10 h-10 flex items-center justify-center rounded-full border-2 ${borderColor} bg-slate-900/80 cursor-help">
               <i data-lucide="${tier.icon}" class="w-5 h-5 ${tier.color}"></i>
             </div>
-            <span class="text-xs font-medium text-slate-400">${tier.value}</span>
+            <span class="text-xs font-medium ${textColor}">${tier.value}</span>
           </div>
           <!-- Tooltip popup that appears at bottom on hover -->
           <div class="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 z-50">
@@ -282,6 +328,7 @@ function renderPlayers(players) {
             <div class="bg-slate-800 border border-slate-600 rounded-full px-6 py-4 min-w-max shadow-lg">
               <div class="text-lg font-bold text-white text-center">${tier.value}</div>
               <div class="text-sm text-slate-300 text-center">${tier.points} points</div>
+              ${retiredLabel}
             </div>
           </div>
         </div>
@@ -295,9 +342,28 @@ function renderPlayers(players) {
       : `<div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700">${p.player.charAt(0).toUpperCase()}</div>`;
 
     // Generate player row HTML
+    let rowBg = 'bg-slate-900/50';
+    let numberColor = 'text-yellow-400';
+    let borderClass = '';
+    if (p.num === 1) {
+      rowBg = 'bg-yellow-600/20 border-yellow-600/30';
+      numberColor = 'text-yellow-400';
+      borderClass = 'border';
+    }
+    else if (p.num === 2) {
+      rowBg = 'bg-gray-400/20 border-gray-400/30';
+      numberColor = 'text-gray-300';
+      borderClass = 'border';
+    }
+    else if (p.num === 3) {
+      rowBg = 'bg-orange-600/20 border-orange-600/30';
+      numberColor = 'text-orange-400';
+      borderClass = 'border';
+    }
+    
     const rowHTML = `
-      <div class="bg-slate-900/50 rounded-xl px-6 py-4 flex items-center">
-        <div class="w-16 text-yellow-400 font-bold text-lg">#${p.num}.</div>
+      <div class="rounded-xl px-6 py-4 flex items-center ${borderClass} ${rowBg}">
+        <div class="w-16 font-bold text-lg ${numberColor}">#${p.num}.</div>
         <div class="ml-4">
           ${avatarHTML}
         </div>
@@ -308,7 +374,7 @@ function renderPlayers(players) {
             ${p.title} (${p.totalPoints} points)
           </p>
         </div>
-        <div class="w-32 text-center">
+        <div class="w-24 text-left">
           <span class="px-4 py-1.5 rounded-full text-sm font-medium ${p.regionBg} ${p.regionText}">${p.region}</span>
         </div>
         <div class="flex-1 flex justify-end gap-4">

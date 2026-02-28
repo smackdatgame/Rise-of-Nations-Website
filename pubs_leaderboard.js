@@ -2,7 +2,7 @@
 
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
 const SHEET_TITLE = "Overall_Rank";
-const SHEET_RANGE = "A2:C"; // Columns A-C starting from row 2 to skip header
+const SHEET_RANGE = "A2:I"; // Columns A-I, where I (index 8) is Pubs retirement
 
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
 
@@ -98,13 +98,15 @@ fetch(FULL_SHEET_URL)
         continue;
       }
 
-      // Based on your spreadsheet structure:
+      // Based on your spreadsheet structure (Overall_Rank sheet):
       // Column A (index 0) = Player
       // Column B (index 1) = Region
-      // Column C (index 2) = Points
+      // Column C (index 2) = Pubs Points
+      // Column I (index 8) = Pubs Retired
       const player = row[0] && row[0].v ? row[0].v : null;
       const region = row[1] && row[1].v ? row[1].v : 'NA';
       const points = row[2] && row[2].v !== null && row[2].v !== undefined ? row[2].v : 0;
+      const isRetired = row[8] && (row[8].v === true || row[8].v === 'TRUE' || row[8].v === 1) ? true : false;
       const userId = null;
 
       console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Points=${points}`);
@@ -130,7 +132,8 @@ fetch(FULL_SHEET_URL)
           points, 
           num: i + 1, // Row number for sorting
           userId, 
-          avatarUrl
+          avatarUrl,
+          isRetired
         });
       }
     }
@@ -161,10 +164,13 @@ fetch(FULL_SHEET_URL)
       } else {
         tierGroups[t].forEach((p, index) => {
           // Generate avatar HTML with fallback
+          const borderClass = p.isRetired ? 'border-transparent' : 'border-2 border-slate-700';
           const avatarHTML = p.avatarUrl 
-            ? `<img src="${p.avatarUrl}" alt="${p.player} avatar" class="w-10 h-10 rounded-lg border-2 border-slate-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-               <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700" style="display:none;">${p.player.charAt(0).toUpperCase()}</div>`
-            : `<div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-700">${p.player.charAt(0).toUpperCase()}</div>`;
+            ? `<img src="${p.avatarUrl}" alt="${p.player} avatar" class="w-10 h-10 rounded-lg ${borderClass}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+               <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold ${borderClass}" style="display:none;">${p.player.charAt(0).toUpperCase()}</div>`
+            : `<div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold ${borderClass}">${p.player.charAt(0).toUpperCase()}</div>`;
+          
+          const retiredLabel = p.isRetired ? '<span class="text-slate-400 text-xs">Retired</span>' : '';
           
           html += `
             <li class="bg-slate-800/50 rounded-lg p-3 flex items-center justify-between hover:bg-slate-800/70 transition-colors">
@@ -173,6 +179,7 @@ fetch(FULL_SHEET_URL)
                 <div class="flex flex-col min-w-0">
                   <span class="text-white font-semibold truncate">${p.player}</span>
                   <span class="text-slate-400 text-xs">${p.region}</span>
+                  ${retiredLabel}
                 </div>
               </div>
               <span class="${pointsColor} font-bold text-lg">${p.points}</span>
