@@ -32,8 +32,8 @@
         playersArray = pubPlayers;
       } else if (typeof eventPlayers !== 'undefined') {
         playersArray = eventPlayers;
-      } else if (typeof speedrunPlayers !== 'undefined') {
-        playersArray = speedrunPlayers;
+      } else if (typeof tournamentsPlayers !== 'undefined') {
+        playersArray = tournamentsPlayers;
       } else if (typeof frontlinePlayers !== 'undefined') {
         playersArray = frontlinePlayers;
       } else if (typeof supportPlayers !== 'undefined') {
@@ -98,8 +98,8 @@
       playersArray = pubPlayers;
     } else if (typeof eventPlayers !== 'undefined') {
       playersArray = eventPlayers;
-    } else if (typeof speedrunPlayers !== 'undefined') {
-      playersArray = speedrunPlayers;
+    } else if (typeof tournamentsPlayers !== 'undefined') {
+      playersArray = tournamentsPlayers;
     } else if (typeof frontlinePlayers !== 'undefined') {
       playersArray = frontlinePlayers;
     } else if (typeof supportPlayers !== 'undefined') {

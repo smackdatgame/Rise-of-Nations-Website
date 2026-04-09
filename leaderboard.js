@@ -3,7 +3,7 @@
 // Define constants for Google Sheets API access
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
 const SHEET_TITLE = "Overall_Rank";
-const SHEET_RANGE = "A2:N"; // Columns A-N: A=Player, B=Region, C=Pubs, D=Events, E=Speedrun, F=Frontline, G=Support, H=Official_Events, I-N=Retired flags for each category
+const SHEET_RANGE = "A2:N"; // Columns A-N: A=Player, B=Region, C=Pubs, D=Events, E=Tournaments, F=Frontline, G=Support, H=Official_Events, I-N=Retired flags for each category
 
 // Construct URL for fetching data from Google Sheets
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
@@ -47,13 +47,13 @@ fetch(FULL_SHEET_URL)
       // Column B (index 1) = Region
       // Column C (index 2) = Pubs rank points
       // Column D (index 3) = Events rank points
-      // Column E (index 4) = Speedrun rank points
+      // Column E (index 4) = Tournaments rank points
       // Column F (index 5) = Frontline rank points
       // Column G (index 6) = Support rank points
       // Column H (index 7) = Official Events rank points
       // Column I (index 8) = Pubs Retired
       // Column J (index 9) = Events Retired
-      // Column K (index 10) = Speedrun Retired
+      // Column K (index 10) = Tournaments Retired
       // Column L (index 11) = Frontline Retired
       // Column M (index 12) = Support Retired
       // Column N (index 13) = Official Events Retired
@@ -61,19 +61,19 @@ fetch(FULL_SHEET_URL)
       const region = row[1] && row[1].v ? row[1].v : 'NA';
       const pubPoints = row[2] && row[2].v !== null && row[2].v !== undefined ? row[2].v : 0;
       const eventPoints = row[3] && row[3].v !== null && row[3].v !== undefined ? row[3].v : 0;
-      const speedrunPoints = row[4] && row[4].v !== null && row[4].v !== undefined ? row[4].v : 0;
+      const tournamentsPoints = row[4] && row[4].v !== null && row[4].v !== undefined ? row[4].v : 0;
       const frontlinePoints = row[5] && row[5].v !== null && row[5].v !== undefined ? row[5].v : 0;
       const supportPoints = row[6] && row[6].v !== null && row[6].v !== undefined ? row[6].v : 0;
       const officialEventsPoints = row[7] && row[7].v !== null && row[7].v !== undefined ? row[7].v : 0;
       const pubRetired = row[8] && (row[8].v === true || row[8].v === 'TRUE' || row[8].v === 1) ? true : false;
       const eventRetired = row[9] && (row[9].v === true || row[9].v === 'TRUE' || row[9].v === 1) ? true : false;
-      const speedrunRetired = row[10] && (row[10].v === true || row[10].v === 'TRUE' || row[10].v === 1) ? true : false;
+      const tournamentsRetired = row[10] && (row[10].v === true || row[10].v === 'TRUE' || row[10].v === 1) ? true : false;
       const frontlineRetired = row[11] && (row[11].v === true || row[11].v === 'TRUE' || row[11].v === 1) ? true : false;
       const supportRetired = row[12] && (row[12].v === true || row[12].v === 'TRUE' || row[12].v === 1) ? true : false;
       const officialEventsRetired = row[13] && (row[13].v === true || row[13].v === 'TRUE' || row[13].v === 1) ? true : false;
       const userId = null;
 
-      console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Pub=${pubPoints}, Event=${eventPoints}, Speedrun=${speedrunPoints}, Frontline=${frontlinePoints}, Support=${supportPoints}, OfficialEvents=${officialEventsPoints}`);
+      console.log(`Row ${i + 1}: Player=${player}, Region=${region}, Pub=${pubPoints}, Event=${eventPoints}, Tournaments=${tournamentsPoints}, Frontline=${frontlinePoints}, Support=${supportPoints}, OfficialEvents=${officialEventsPoints}`);
 
       // Skip invalid rows
       if (!player) {
@@ -86,15 +86,15 @@ fetch(FULL_SHEET_URL)
       // Convert points to tier strings
       const pub = pointsToTier(pubPoints);
       const event = pointsToTier(eventPoints);
-      const speedrun = pointsToTier(speedrunPoints);
+      const tournaments = pointsToTier(tournamentsPoints);
       const frontline = pointsToTier(frontlinePoints);
       const support = pointsToTier(supportPoints);
       const officialEvents = pointsToTier(officialEventsPoints);
 
       // Sum up total points
-      const totalPoints = pubPoints + eventPoints + speedrunPoints + frontlinePoints + supportPoints + officialEventsPoints;
+      const totalPoints = pubPoints + eventPoints + tournamentsPoints + frontlinePoints + supportPoints + officialEventsPoints;
 
-      console.log(`${player}: pub=${pubPoints}(${pub}), event=${eventPoints}(${event}), speedrun=${speedrunPoints}(${speedrun}), frontline=${frontlinePoints}(${frontline}), support=${supportPoints}(${support}), officialEvents=${officialEventsPoints}(${officialEvents}), total=${totalPoints}`);
+      console.log(`${player}: pub=${pubPoints}(${pub}), event=${eventPoints}(${event}), tournaments=${tournamentsPoints}(${tournaments}), frontline=${frontlinePoints}(${frontline}), support=${supportPoints}(${support}), officialEvents=${officialEventsPoints}(${officialEvents}), total=${totalPoints}`);
 
       // Determine title based on total points
       let title = 'Rookie';
@@ -141,7 +141,7 @@ fetch(FULL_SHEET_URL)
         region,
         pub,
         event,
-        speedrun,
+        tournaments,
         frontline,
         support,
         officialEvents,
@@ -154,13 +154,13 @@ fetch(FULL_SHEET_URL)
         userId,
         pubPoints,
         eventPoints,
-        speedrunPoints,
+        tournamentsPoints,
         frontlinePoints,
         supportPoints,
         officialEventsPoints,
         pubRetired,
         eventRetired,
-        speedrunRetired,
+        tournamentsRetired,
         frontlineRetired,
         supportRetired,
         officialEventsRetired
@@ -290,7 +290,7 @@ function renderPlayers(players) {
     const tierIcons = [
       { category: 'pub', icon: 'swords', color: 'text-green-400', value: p.pub, points: p.pubPoints },
       { category: 'event', icon: 'user', color: 'text-purple-400', value: p.event, points: p.eventPoints },
-      { category: 'speedrun', icon: 'zap', color: 'text-red-500', value: p.speedrun, points: p.speedrunPoints },
+      { category: 'tournaments', icon: 'zap', color: 'text-red-500', value: p.tournaments, points: p.tournamentsPoints },
       { category: 'frontline', icon: 'shield', color: 'text-blue-500', value: p.frontline, points: p.frontlinePoints },
       { category: 'support', icon: 'dollar-sign', color: 'text-pink-500', value: p.support, points: p.supportPoints },
       { category: 'officialEvents', icon: 'globe', color: 'text-cyan-400', value: p.officialEvents, points: p.officialEventsPoints }
@@ -303,7 +303,7 @@ function renderPlayers(players) {
       let isRetired = false;
       if (tier.category === 'pub') isRetired = p.pubRetired;
       else if (tier.category === 'event') isRetired = p.eventRetired;
-      else if (tier.category === 'speedrun') isRetired = p.speedrunRetired;
+      else if (tier.category === 'tournaments') isRetired = p.tournamentsRetired;
       else if (tier.category === 'frontline') isRetired = p.frontlineRetired;
       else if (tier.category === 'support') isRetired = p.supportRetired;
       else if (tier.category === 'officialEvents') isRetired = p.officialEventsRetired;
