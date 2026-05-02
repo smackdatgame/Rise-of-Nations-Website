@@ -69,7 +69,7 @@
     const tierIcons = [
       { icon: 'swords', color: 'text-green-400', bg: 'bg-green-900', value: player.pub, points: player.pubPoints, label: 'Pubs' },
       { icon: 'globe', color: 'text-purple-400', bg: 'bg-purple-900', value: player.event, points: player.eventPoints, label: 'Events' },
-      { icon: 'target', color: 'text-red-500', bg: 'bg-red-900', value: player.tournaments, points: player.tournamentsPoints, label: 'Tournaments' },
+      { icon: 'target', color: 'text-red-500', bg: 'bg-red-900', value: player.tournaments, points: player.tournamentsPoints, label: 'VIP Events' },
       { icon: 'shield', color: 'text-blue-500', bg: 'bg-blue-900', value: player.frontline, points: player.frontlinePoints, label: 'Frontline' },
       { icon: 'dollar-sign', color: 'text-pink-500', bg: 'bg-pink-900', value: player.support, points: player.supportPoints, label: 'Support' },
       { icon: 'users', color: 'text-cyan-400', bg: 'bg-cyan-900', value: player.officialEvents, points: player.officialEventsPoints, label: 'Official Events' }
@@ -113,7 +113,7 @@
       let isRetired = false;
       if (tier.label === 'Pubs') isRetired = player.pubRetired;
       else if (tier.label === 'Events') isRetired = player.eventRetired;
-      else if (tier.label === 'Tournaments') isRetired = player.tournamentsRetired;
+      else if (tier.label === 'VIP Events') isRetired = player.tournamentsRetired;
       else if (tier.label === 'Frontline') isRetired = player.frontlineRetired;
       else if (tier.label === 'Support') isRetired = player.supportRetired;
       else if (tier.label === 'Official Events') isRetired = player.officialEventsRetired;

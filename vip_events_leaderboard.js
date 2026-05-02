@@ -1,8 +1,8 @@
-// tournaments_leaderboard.js
+// vip_events_leaderboard.js
 
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
 const SHEET_TITLE = "Overall_Rank";
-const SHEET_RANGE = "A2:K"; // Columns A-K, where K (index 10) is Tournaments retirement
+const SHEET_RANGE = "A2:K"; // Columns A-K, where K (index 10) is VIP Events retirement
 
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
 
@@ -74,8 +74,8 @@ fetch(FULL_SHEET_URL)
       // Based on your spreadsheet structure (Overall_Rank sheet):
       // Column A (index 0) = Player
       // Column B (index 1) = Region
-      // Column E (index 4) = Tournaments Points
-      // Column K (index 10) = Tournaments Retired
+      // Column E (index 4) = VIP Events Points
+      // Column K (index 10) = VIP Events Retired
       const player = row[0] && row[0].v ? row[0].v : null;
       const region = row[1] && row[1].v ? row[1].v : 'NA';
       const points = row[4] && row[4].v !== null && row[4].v !== undefined ? row[4].v : 0;
@@ -160,7 +160,7 @@ fetch(FULL_SHEET_URL)
     if (container) {
       container.innerHTML = `
         <div class="bg-red-900/50 rounded-xl px-6 py-4 text-center">
-          <p class="text-red-300 font-medium">Error loading Tournaments leaderboard data</p>
+          <p class="text-red-300 font-medium">Error loading VIP Events leaderboard data</p>
           <p class="text-red-400 text-sm mt-2">${error.message}</p>
         </div>
       `;

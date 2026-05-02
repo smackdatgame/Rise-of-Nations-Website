@@ -3,7 +3,7 @@
 // Define constants for Google Sheets API access
 const SHEET_ID = "1IU-KLaDjhjsyvM9NtPFSXt0HSD1rJJZnT8bEJ6klIVs";
 const SHEET_TITLE = "Overall_Rank";
-const SHEET_RANGE = "A2:N"; // Columns A-N: A=Player, B=Region, C=Pubs, D=Events, E=Tournaments, F=Frontline, G=Support, H=Official_Events, I-N=Retired flags for each category
+const SHEET_RANGE = "A2:N"; // Columns A-N: A=Player, B=Region, C=Pubs, D=Events, E=VIP Events, F=Frontline, G=Support, H=Official_Events, I-N=Retired flags for each category
 
 // Construct URL for fetching data from Google Sheets
 const FULL_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
@@ -47,13 +47,13 @@ fetch(FULL_SHEET_URL)
       // Column B (index 1) = Region
       // Column C (index 2) = Pubs rank points
       // Column D (index 3) = Events rank points
-      // Column E (index 4) = Tournaments rank points
+      // Column E (index 4) = VIP Events rank points
       // Column F (index 5) = Frontline rank points
       // Column G (index 6) = Support rank points
       // Column H (index 7) = Official Events rank points
       // Column I (index 8) = Pubs Retired
       // Column J (index 9) = Events Retired
-      // Column K (index 10) = Tournaments Retired
+      // Column K (index 10) = VIP Events Retired
       // Column L (index 11) = Frontline Retired
       // Column M (index 12) = Support Retired
       // Column N (index 13) = Official Events Retired
@@ -290,7 +290,7 @@ function renderPlayers(players) {
     const tierIcons = [
       { category: 'pub', icon: 'swords', color: 'text-green-400', value: p.pub, points: p.pubPoints },
       { category: 'event', icon: 'user', color: 'text-purple-400', value: p.event, points: p.eventPoints },
-      { category: 'tournaments', icon: 'zap', color: 'text-red-500', value: p.tournaments, points: p.tournamentsPoints },
+      { category: 'tournaments', icon: 'diamond', color: 'text-red-500', value: p.tournaments, points: p.tournamentsPoints },
       { category: 'frontline', icon: 'shield', color: 'text-blue-500', value: p.frontline, points: p.frontlinePoints },
       { category: 'support', icon: 'dollar-sign', color: 'text-pink-500', value: p.support, points: p.supportPoints },
       { category: 'officialEvents', icon: 'globe', color: 'text-cyan-400', value: p.officialEvents, points: p.officialEventsPoints }
